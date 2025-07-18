@@ -153,18 +153,7 @@
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
     }
     
-    .hamburger.active span:nth-child(1) {
-      transform: rotate(-45deg) translate(-6px, 7px);
-    }
-    
-    .hamburger.active span:nth-child(2) {
-      opacity: 0;
-      transform: scale(0);
-    }
-    
-    .hamburger.active span:nth-child(3) {
-      transform: rotate(45deg) translate(-6px, -7px);
-    }
+    /* 기본 active 스타일 제거 - 모바일에서만 적용되도록 함 */
     
     .content-wrapper {
       display: flex;
@@ -1132,21 +1121,7 @@
       transform-origin: center;
     }
     
-    /* 모바일에서만 햄버거 버튼 X 변환 적용 */
-    @media screen and (max-width: 768px) {
-      .hamburger.active span:nth-child(1) {
-        transform: rotate(45deg) translate(7px, 7px);
-      }
-      
-      .hamburger.active span:nth-child(2) {
-        opacity: 0;
-        transform: scale(0);
-      }
-      
-      .hamburger.active span:nth-child(3) {
-        transform: rotate(-45deg) translate(7px, -7px);
-      }
-    }
+    /* 햄버거 버튼 active 관련 제거됨 */
     
     .hamburger:hover {
       background: rgba(255, 255, 255, 0.1);
@@ -2423,10 +2398,8 @@
       }
       
       function openSidebar() {
-        // 사이드바가 실제로 열렸을 때만 active 클래스 추가
+        // 사이드바 열기
         sidebar.classList.add('open');
-        sidebarOverlay.classList.add('active');
-        hamburger.classList.add('active');
         document.body.style.overflow = 'hidden';
         document.documentElement.style.overflow = 'hidden';
         // 모바일에서 사이드바가 최상단에 오도록 함
@@ -2434,10 +2407,8 @@
       }
       
       function closeSidebar() {
-        // 사이드바가 실제로 닫혔을 때만 active 클래스 제거
+        // 사이드바 닫기
         sidebar.classList.remove('open');
-        sidebarOverlay.classList.remove('active');
-        hamburger.classList.remove('active');
         document.body.style.overflow = '';
         document.documentElement.style.overflow = '';
         // z-index 원래대로 되돌리기
