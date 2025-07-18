@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GO - 블로그</title>
+  <meta name="description" content="GO의 개발 블로그 - 옵시디언으로 작성하는 실시간 블로그">
+  <meta name="keywords" content="개발, 블로그, 옵시디언, 마크다운, 실시간">
+  <meta name="author" content="GO">
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="alternate" type="application/rss+xml" title="GO 블로그 RSS" href="/rss.xml">
+  <style>
+    * { 
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box; 
+    }
+    
+    body { 
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+      background: #0a0a0a; 
+      color: #f8f9fa; 
+      line-height: 1.7; 
+      font-weight: 400;
+      letter-spacing: -0.01em;
+    }
+    
+    .container { 
+      display: flex; 
+      min-height: 100vh; 
+      flex-direction: column;
+    }
+    
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 80px;
+      background: #111111;
+      border-bottom: 1px solid #2d3748;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1001;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+    
+    .logo { 
+      font-size: 1.8em; 
+      font-weight: 700; 
+      color: #ffffff; 
+      text-align: center; 
+      letter-spacing: -0.02em;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    
+    .hamburger {
+      display: none;
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 4px;
+      transition: background 0.2s ease;
+    }
+    
+    .hamburger:hover {
+      background: #2d3748;
+    }
+    
+    .hamburger span {
+      display: block;
+      width: 20px;
+      height: 2px;
+      background: #ffffff;
+      margin: 4px 0;
+      transition: all 0.3s ease;
+    }
+    
+    .hamburger.active span:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+    
+    .hamburger.active span:nth-child(2) {
+      opacity: 0;
+    }
+    
+    .hamburger.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(7px, -6px);
+    }
+    
+    .main-container {
+      display: flex;
+      flex: 1;
+      margin-top: 80px;
+    }
+    
+    .sidebar { 
+      width: 320px; 
+      background: linear-gradient(180deg, #111111 0%, #1a202c 100%);
+      border-right: 1px solid #2d3748; 
+      overflow-y: auto; 
+      position: fixed; 
+      height: calc(100vh - 80px);
+      top: 80px;
+      left: 0;
+      z-index: 1000;
+      box-shadow: 2px 0 20px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease;
+    }
+    
+    .sidebar-header { 
+      padding: 20px 24px 16px 24px; 
+      border-bottom: 1px solid #2d3748; 
+      background: rgba(255, 255, 255, 0.02);
+      margin: 0;
+    }
+    
+    .sidebar-title {
+      font-size: 1.1em;
+      font-weight: 600;
+      color: #adb5bd;
+      text-align: center;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      font-size: 0.9em;
+    }
+    
+    .search-box {
+      margin: 16px 24px;
+      position: relative;
+    }
+    
+    .search-box input {
+      width: 100%;
+      padding: 12px 16px;
+      background: #1a202c;
+      border: 1px solid #2d3748;
+      border-radius: 8px;
+      color: #f8f9fa;
+      font-size: 0.9em;
+      transition: border-color 0.2s ease;
+    }
+    
+    .search-box input:focus {
+      outline: none;
+      border-color: #ffffff;
+    }
+    
+    .search-box input::placeholder {
+      color: #adb5bd;
+    }
+    
+    .search-results {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: #1a202c;
+      border: 1px solid #2d3748;
+      border-radius: 8px;
+      max-height: 200px;
+      overflow-y: auto;
+      z-index: 1002;
+      display: none;
+    }
+    
+    .search-result-item {
+      padding: 8px 16px;
+      cursor: pointer;
+      border-bottom: 1px solid #2d3748;
+      transition: background 0.2s ease;
+    }
+    
+    .search-result-item:hover {
+      background: #2d3748;
+    }
+    
+    .search-result-item:last-child {
+      border-bottom: none;
+    }
+    
+    .sidebar-content { 
+      padding: 20px 0 32px 0; 
+      margin: 0;
+    }
+    
+    .sidebar-folder { 
+      margin-bottom: 0; 
+      list-style: none; 
+    }
+    
+    .sidebar-folder > span { 
+      color: #ffffff; 
+      font-weight: 600; 
+      cursor: pointer; 
+      display: block; 
+      padding: 12px 24px 12px 24px; 
+      user-select: none; 
+      text-align: left; 
+      transition: all 0.2s ease;
+      font-size: 0.95em;
+      letter-spacing: 0.01em;
+      position: relative;
+      margin: 0;
+    }
+    
+    .sidebar-folder > span:hover { 
+      background: #2d3748; 
+      color: #e2e8f0;
+    }
+    
+    .sidebar-folder > span::before { 
+      content: '▼'; 
+      display: inline-block; 
+      margin-right: 12px; 
+      font-size: 0.7em; 
+      transition: transform 0.2s ease;
+      color: #adb5bd;
+    }
+    
+    .sidebar-folder.collapsed > span::before { 
+      transform: rotate(-90deg); 
+    }
+    
+    .sidebar-folder > ul { 
+      margin-left: 20px; 
+      margin-top: 0; 
+      padding-left: 0; 
+      border-left: 2px solid #2d3748; 
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    
+    .sidebar-folder > ul::before {
+      content: '';
+      position: absolute;
+      left: -2px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, #ffffff 0%, transparent 100%);
+      opacity: 0.3;
+    }
+    
+    .sidebar-file { 
+      list-style: none; 
+      margin-bottom: 2px;
+    }
+    
+    .sidebar-file a { 
+      color: #f8f9fa; 
+      text-decoration: none; 
+      display: block; 
+      padding: 8px 24px 8px 24px; 
+      transition: all 0.2s ease;
+      font-size: 0.9em;
+      border-radius: 0 8px 8px 0;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .sidebar-file a:hover { 
+      background: linear-gradient(90deg, transparent 0%, #2d3748 100%);
+      color: #e2e8f0;
+      padding-left: 28px;
+    }
+    
+    .sidebar-file a.active { 
+      background: linear-gradient(90deg, #ffffff 0%, #2d3748 100%);
+      color: #0a0a0a;
+      font-weight: 600;
+      padding-left: 28px;
+    }
+    
+    .sidebar-file a.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: #ffffff;
+    }
+    
+    .main-content { 
+      flex: 1; 
+      margin-left: 320px; 
+      padding: 40px 60px 60px 60px; 
+      max-width: 1200px;
+      transition: margin-left 0.3s ease;
+    }
+    
+    .welcome {
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 60px 0;
+    }
+    
+    .welcome h1 {
+      font-size: 3em;
+      font-weight: 700;
+      margin-bottom: 20px;
+      background: linear-gradient(45deg, #ffffff, #adb5bd);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .welcome p {
+      font-size: 1.2em;
+      color: #adb5bd;
+      line-height: 1.6;
+    }
+    
+    .blog-post {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #111111;
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      border: 1px solid #2d3748;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .blog-post h1 {
+      font-size: 2.5em;
+      font-weight: 700;
+      margin-bottom: 24px;
+      color: #ffffff;
+      border-bottom: 2px solid #2d3748;
+      padding-bottom: 16px;
+    }
+    
+    .blog-post h2, .blog-post h3, .blog-post h4 {
+      margin-top: 32px;
+      margin-bottom: 16px;
+      color: #e2e8f0;
+    }
+    
+    .blog-post p {
+      margin-bottom: 16px;
+      line-height: 1.8;
+    }
+    
+    .blog-post img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      margin: 24px 0;
+    }
+    
+    .blog-post code {
+      background: #1a202c;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-family: 'Monaco', 'Menlo', 'SF Mono', monospace;
+      font-size: 0.9em;
+      color: #e2e8f0;
+    }
+    
+    .blog-post pre {
+      background: #1a202c;
+      padding: 20px;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 20px 0;
+      border: 1px solid #2d3748;
+    }
+    
+    .blog-post pre code {
+      background: none;
+      padding: 0;
+    }
+    
+    .blog-post blockquote {
+      border-left: 4px solid #ffffff;
+      padding-left: 20px;
+      margin: 20px 0;
+      font-style: italic;
+      color: #adb5bd;
+    }
+    
+    .blog-post ul, .blog-post ol {
+      margin: 16px 0;
+      padding-left: 24px;
+    }
+    
+    .blog-post li {
+      margin-bottom: 8px;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #adb5bd;
+    }
+    
+    .loading::after {
+      content: '';
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #2d3748;
+      border-top: 2px solid #ffffff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-left: 10px;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .error {
+      text-align: center;
+      padding: 40px;
+      color: #ff6b6b;
+      background: #2d1b1b;
+      border-radius: 8px;
+      border: 1px solid #4a2c2c;
+    }
+    
+    .status-indicator {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 8px 16px;
+      background: #1a202c;
+      border: 1px solid #2d3748;
+      border-radius: 20px;
+      font-size: 0.8em;
+      color: #adb5bd;
+      z-index: 1003;
+      transition: all 0.3s ease;
+    }
+    
+    .status-indicator.online {
+      background: #0f5132;
+      border-color: #198754;
+      color: #d1e7dd;
+    }
+    
+    .status-indicator.updating {
+      background: #664d03;
+      border-color: #ffc107;
+      color: #fff3cd;
+    }
+    
+    /* 모바일 반응형 */
+    @media (max-width: 768px) {
+      .hamburger {
+        display: block;
+      }
+      
+      .sidebar {
+        transform: translateX(-100%);
+        width: 280px;
+      }
+      
+      .sidebar.open {
+        transform: translateX(0);
+      }
+      
+      .main-content {
+        margin-left: 0;
+        padding: 20px;
+      }
+      
+      .blog-post {
+        padding: 20px;
+      }
+      
+      .blog-post h1 {
+        font-size: 2em;
+      }
+      
+      .welcome h1 {
+        font-size: 2.5em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <button class="hamburger" id="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <div class="logo">GO</div>
+    </header>
+    
+    <div class="status-indicator" id="status-indicator">
+      연결 확인 중...
+    </div>
+    
+    <div class="main-container">
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <h2 class="sidebar-title">블로그 목록</h2>
+        </div>
+        
+        <div class="search-box">
+          <input type="text" id="search-input" placeholder="검색...">
+          <div class="search-results" id="search-results"></div>
+        </div>
+        
+        <div class="sidebar-content">
+          <ul id="sidebar-blog-list">
+<li class="sidebar-folder"><span>개발공부</span><ul>
+  <li class="sidebar-file"><a href="#" class="blog-link" data-slug="개발공부/0718-데미안-때리는-날">0718 - 데미안 때리는 날</a></li>
+  <li class="sidebar-file"><a href="#" class="blog-link" data-slug="개발공부/250717-옵셔널">250717 - 옵셔널</a></li>
+  <li class="sidebar-file"><a href="#" class="blog-link" data-slug="개발공부/개구리">개구리</a></li>
+</ul></li>
+<li class="sidebar-folder"><span>생각정리</span><ul>
+  <li class="sidebar-file"><a href="#" class="blog-link" data-slug="생각정리/브랜뉴">브랜뉴!</a></li>
+  <li class="sidebar-file"><a href="#" class="blog-link" data-slug="생각정리/테스트">테스트</a></li>
+  <li class="sidebar-file"><a href="#" class="blog-link" data-slug="생각정리/헬로우">헬로우</a></li>
+  <li class="sidebar-file"><a href="#" class="blog-link" data-slug="생각정리/Untitled-1">Untitled 1</a></li>
+</ul></li>
+<li class="sidebar-folder"><span>go</span><ul>
+  <li class="sidebar-file"><a href="#" class="blog-link" data-slug="go/안녕하세요">안녕하세요!</a></li>
+</ul></li>
+<li class="sidebar-file"><a href="#" class="blog-link" data-slug="1시-40분">1시 40분</a></li>
+          </ul></li>
+<li class="sidebar-folder"><span>생각정리</span><ul>
+  <li class="sidebar-file"><a href="#" class="blog-link" data-slug="생각정리/브랜뉴">브랜뉴!</a></li>
+  <li class="sidebar-file"><a href="#" class="blog-link" data-slug="생각정리/테스트">테스트</a></li>
+  <li class="sidebar-file"><a href="#" class="blog-link" data-slug="생각정리/헬로우">헬로우</a></li>
+  <li class="sidebar-file"><a href="#" class="blog-link" data-slug="생각정리/Untitled-1">Untitled 1</a></li>
+</ul></li>
+<li class="sidebar-folder"><span>go</span><ul>
+  <li class="sidebar-file"><a href="#" class="blog-link" data-slug="go/안녕하세요">안녕하세요!</a></li>
+</ul></li>
+<li class="sidebar-file"><a href="#" class="blog-link" data-slug="1시-40분">1시 40분</a></li>
+          </ul>
+        </div>
+      </aside>
+      
+      <main class="main-content">
+        <div id="content">
+          <div class="welcome">
+            <h1>GO 블로그</h1>
+            <p>사이드바에서 원하는 글을 선택하세요.<br>
+            실시간으로 업데이트되는 옵시디언 블로그입니다.</p>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+<script>
+  // 전역 변수
+  const ERROR_TITLE = "오류";
+  const ERROR_MSG = "글을 불러올 수 없습니다.";
+  
+  let currentSlug = null;
+  let updateInterval = null;
+  let sidebarUpdateInterval = null;
+  let allPosts = [];
+  let isOnline = false;
+  
+  // DOM 요소
+  const contentDiv = document.getElementById('content');
+  const sidebarList = document.getElementById('sidebar-blog-list');
+  const searchInput = document.getElementById('search-input');
+  const searchResults = document.getElementById('search-results');
+  const statusIndicator = document.getElementById('status-indicator');
+  const hamburger = document.getElementById('hamburger');
+  const sidebar = document.getElementById('sidebar');
+  
+  // 상태 표시기 업데이트
+  function updateStatusIndicator(status, message) {
+    statusIndicator.className = `status-indicator ${status}`;
+    statusIndicator.textContent = message;
+  }
+  
+  // 로딩 상태 표시
+  function showLoading() {
+    contentDiv.innerHTML = '<div class="loading">로딩 중...</div>';
+  }
+  
+  // 에러 상태 표시
+  function showError(message = ERROR_MSG) {
+    contentDiv.innerHTML = `<div class="error"><h2>${ERROR_TITLE}</h2><p>${message}</p></div>`;
+  }
+  
+  // 블로그 포스트 로드
+  function loadBlogPost(slug) {
+    currentSlug = slug;
+    showLoading();
+    
+    fetch('/blog/' + slug + '.html')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('포스트를 찾을 수 없습니다.');
+        }
+        return response.text();
+      })
+      .then(html => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const article = doc.querySelector('article');
+        const title = doc.querySelector('h1');
+        
+        if (article && title) {
+          contentDiv.innerHTML = `<div class="blog-post"><h1>${title.textContent}</h1>${article.innerHTML}</div>`;
+          updateStatusIndicator('online', '온라인');
+          isOnline = true;
+        } else {
+          showError('포스트 내용을 파싱할 수 없습니다.');
+        }
+      })
+      .catch(error => {
+        showError(error.message);
+        updateStatusIndicator('offline', '오프라인');
+        isOnline = false;
+      });
+  }
+  
+  // 사이드바 목록 업데이트
+  function updateSidebar() {
+    updateStatusIndicator('updating', '업데이트 중...');
+    
+    fetch('/blog-list.json')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('목록을 불러올 수 없습니다.');
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (sidebarList && data.blogList) {
+          sidebarList.innerHTML = data.blogList;
+          allPosts = data.posts || [];
+          
+          // 이벤트 리스너 재등록
+          registerEventListeners();
+          
+          // 현재 선택된 항목 하이라이트
+          if (currentSlug) {
+            document.querySelectorAll('.blog-link').forEach(link => {
+              if (link.getAttribute('data-slug') === currentSlug) {
+                link.classList.add('active');
+              } else {
+                link.classList.remove('active');
+              }
+            });
+          }
+          
+          updateStatusIndicator('online', '온라인');
+          isOnline = true;
+        }
+      })
+      .catch(error => {
+        console.error('사이드바 업데이트 실패:', error);
+        updateStatusIndicator('offline', '오프라인');
+        isOnline = false;
+      });
+  }
+  
+  // 현재 콘텐츠 업데이트
+  function updateCurrentContent() {
+    if (currentSlug && isOnline) {
+      loadBlogPost(currentSlug);
+    }
+  }
+  
+  // 검색 기능
+  function performSearch(query) {
+    if (!query.trim()) {
+      searchResults.style.display = 'none';
+      return;
+    }
+    
+    const results = allPosts.filter(post => 
+      post.title.toLowerCase().includes(query.toLowerCase()) ||
+      post.path.toLowerCase().includes(query.toLowerCase())
+    );
+    
+    if (results.length === 0) {
+      searchResults.innerHTML = '<div class="search-result-item">검색 결과가 없습니다.</div>';
+    } else {
+      searchResults.innerHTML = results.map(post => 
+        `<div class="search-result-item" data-slug="${post.slug}">${post.title}</div>`
+      ).join('');
+    }
+    
+    searchResults.style.display = 'block';
+  }
+  
+  // 이벤트 리스너 등록
+  function registerEventListeners() {
+    // 폴더 접기/펼치기
+    document.querySelectorAll('.sidebar-folder > span').forEach(folderSpan => {
+      folderSpan.addEventListener('click', function() {
+        folderSpan.parentElement.classList.toggle('collapsed');
+      });
+    });
+    
+    // 블로그 링크 클릭
+    document.querySelectorAll('.blog-link').forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const slug = this.getAttribute('data-slug');
+        if (slug) {
+          loadBlogPost(slug);
+          window.location.hash = '#' + slug;
+          
+          // 모바일에서 사이드바 닫기
+          if (window.innerWidth <= 768) {
+            sidebar.classList.remove('open');
+            hamburger.classList.remove('active');
+          }
+        }
+      });
+    });
+    
+    // 검색 결과 클릭
+    document.querySelectorAll('.search-result-item').forEach(item => {
+      item.addEventListener('click', function() {
+        const slug = this.getAttribute('data-slug');
+        if (slug) {
+          loadBlogPost(slug);
+          window.location.hash = '#' + slug;
+          searchResults.style.display = 'none';
+          searchInput.value = '';
+          
+          // 모바일에서 사이드바 닫기
+          if (window.innerWidth <= 768) {
+            sidebar.classList.remove('open');
+            hamburger.classList.remove('active');
+          }
+        }
+      });
+    });
+  }
+  
+  // 실시간 업데이트 시작
+  function startRealtimeUpdates() {
+    sidebarUpdateInterval = setInterval(updateSidebar, 5000);
+    updateInterval = setInterval(updateCurrentContent, 3000);
+  }
+  
+  // 실시간 업데이트 중지
+  function stopRealtimeUpdates() {
+    if (sidebarUpdateInterval) clearInterval(sidebarUpdateInterval);
+    if (updateInterval) clearInterval(updateInterval);
+  }
+  
+  // 초기화
+  document.addEventListener('DOMContentLoaded', function() {
+    // 초기 사이드바 업데이트
+    updateSidebar();
+    
+    // 검색 기능
+    searchInput.addEventListener('input', function() {
+      performSearch(this.value);
+    });
+    
+    // 검색 결과 외부 클릭 시 숨기기
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.search-box')) {
+        searchResults.style.display = 'none';
+      }
+    });
+    
+    // 햄버거 메뉴
+    hamburger.addEventListener('click', function() {
+      sidebar.classList.toggle('open');
+      hamburger.classList.toggle('active');
+    });
+    
+    // 해시 변경 감지
+    window.addEventListener('hashchange', function() {
+      const slug = window.location.hash.substring(1);
+      if (slug) {
+        loadBlogPost(slug);
+      }
+    });
+    
+    // 초기 해시 처리
+    if (window.location.hash) {
+      const slug = window.location.hash.substring(1);
+      loadBlogPost(slug);
+    }
+    
+    // 실시간 업데이트 시작
+    startRealtimeUpdates();
+    
+    // 페이지 포커스/블러 시 업데이트 제어
+    document.addEventListener('visibilitychange', function() {
+      if (document.hidden) {
+        stopRealtimeUpdates();
+      } else {
+        startRealtimeUpdates();
+      }
+    });
+  });
+</script>
+
+</body>
+</html> 

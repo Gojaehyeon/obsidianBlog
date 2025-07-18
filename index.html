@@ -1,0 +1,2198 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Go's Digital Garden</title>
+  <meta name="description" content="옵시디언 스타일의 개인 블로그 - 생각의 연결망을 탐험하세요">
+  <meta name="keywords" content="블로그, 개발, 학습, 생각정리, 옵시디언">
+  <meta name="author" content="Go">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Go's Digital Garden">
+  <meta property="og:description" content="옵시디언 스타일의 개인 블로그 - 생각의 연결망을 탐험하세요">
+  <meta property="og:url" content="https://baburger.xyz">
+  <meta property="og:image" content="https://baburger.xyz/images/og-image.jpg">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:title" content="Go's Digital Garden">
+  <meta property="twitter:description" content="옵시디언 스타일의 개인 블로그 - 생각의 연결망을 탐험하세요">
+  <meta property="twitter:image" content="https://baburger.xyz/images/og-image.jpg">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="/assets/logo/logo.png">
+  
+  <!-- RSS Feed -->
+  <link rel="alternate" type="application/rss+xml" title="Go's Digital Garden RSS" href="/rss.xml">
+  
+  <!-- Vis.js for Graph Network -->
+  <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  
+  <style>
+    * { 
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box; 
+    }
+    
+    body { 
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+      background: #0a0a0a; 
+      color: #f8f9fa; 
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    
+    .container { 
+      display: flex; 
+      min-height: 100vh; 
+      position: relative;
+    }
+    
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 80px;
+      background: linear-gradient(135deg, #111111 0%, #1a1a1a 50%, #2d2d2d 100%);
+      border-bottom: 1px solid #333;
+      z-index: 1002;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      box-shadow: 0 4px 32px rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(8px);
+    }
+    
+    .logo { 
+      display: flex;
+      align-items: center;
+      font-size: 2.2em;
+      font-weight: 800;
+      color: #ffffff; 
+      text-decoration: none;
+      letter-spacing: 0.05em;
+      background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 50%, #e9ecef 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 2px 10px rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+      position: relative;
+      /* Safari/Chrome가 아닌 브라우저를 위한 fallback */
+      color: #ffffff;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    
+    /* webkit 브라우저에서만 gradient 적용 */
+    @supports (-webkit-background-clip: text) {
+      .logo {
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent;
+      }
+    }
+    
+    .logo:hover {
+      transform: scale(1.05);
+      filter: brightness(1.1);
+    }
+    
+    .logo::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #ffffff, transparent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .logo:hover::after {
+      opacity: 1;
+    }
+    
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 12px;
+      transition: all 0.3s ease;
+    }
+    
+    .hamburger:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    
+    .hamburger span {
+      width: 28px;
+      height: 3px;
+      background: #ffffff;
+      margin: 4px 0;
+      transition: all 0.3s ease;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+    
+    .hamburger.active span:nth-child(1) {
+      transform: rotate(-45deg) translate(-6px, 7px);
+    }
+    
+    .hamburger.active span:nth-child(2) {
+      opacity: 0;
+      transform: scale(0);
+    }
+    
+    .hamburger.active span:nth-child(3) {
+      transform: rotate(45deg) translate(-6px, -7px);
+    }
+    
+    .content-wrapper {
+      display: flex;
+      flex: 1;
+      margin-top: 80px;
+    }
+    
+    .sidebar { 
+      width: 320px; 
+      background: #0a0a0a;
+      border-right: 1px solid #2d3748; 
+      overflow-y: auto; 
+      position: fixed; 
+      height: calc(100vh - 80px);
+      top: 80px;
+      left: 0;
+      z-index: 1000;
+      box-shadow: 2px 0 20px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease;
+      min-width: 200px;
+      max-width: 600px;
+    }
+
+    .sidebar.resizing {
+      transition: none;
+    }
+
+    .sidebar-resize-handle {
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 4px;
+      height: 100%;
+      background: transparent;
+      cursor: col-resize;
+      z-index: 1001;
+    }
+
+    .sidebar-resize-handle:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .sidebar-resize-handle:active {
+      background: rgba(255, 255, 255, 0.4);
+    }
+    
+    .sidebar-header { 
+      padding: 0;
+      border-bottom: none;
+      background: none;
+      margin: 0;
+      height: 0;
+      overflow: hidden;
+    }
+    
+    .sidebar-title {
+      font-size: 1.1em;
+      font-weight: 600;
+      color: #adb5bd;
+      text-align: center;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      font-size: 0.9em;
+    }
+    
+    .search-box {
+      margin: 16px 24px;
+      position: relative;
+    }
+    
+    .search-box input {
+      width: 100%;
+      padding: 12px 16px;
+      background: #1a202c;
+      border: 1px solid #2d3748;
+      color: #f8f9fa;
+      font-size: 0.9em;
+      transition: border-color 0.2s ease;
+    }
+    
+    .search-box input:focus {
+      outline: none;
+      border-color: #ffffff;
+    }
+    
+    .search-box input::placeholder {
+      color: #adb5bd;
+    }
+    
+    .search-results {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: #1a202c;
+      border: 1px solid #2d3748;
+      max-height: 200px;
+      overflow-y: auto;
+      z-index: 1002;
+      display: none;
+    }
+    
+    .search-result-item {
+      padding: 8px 16px;
+      cursor: pointer;
+      border-bottom: 1px solid #2d3748;
+      transition: background 0.2s ease;
+    }
+    
+    .search-result-item:hover {
+      background: #2d3748;
+    }
+    
+    .search-result-item:last-child {
+      border-bottom: none;
+    }
+    
+    .sidebar-content { 
+      padding: 20px 0 32px 0; 
+      margin: 0;
+    }
+    
+    .sidebar-folder { 
+      margin-bottom: 0; 
+      list-style: none; 
+    }
+    
+    .sidebar-folder > span { 
+      color: #ffffff; 
+      font-weight: 600; 
+      cursor: pointer; 
+      display: block; 
+      padding: 12px 24px 12px 24px; 
+      user-select: none; 
+      text-align: left; 
+      transition: all 0.2s ease;
+      font-size: 0.95em;
+      letter-spacing: 0.01em;
+      position: relative;
+      margin: 0;
+    }
+    
+    .sidebar-folder > span:hover { 
+      background: #2d3748; 
+      color: #e2e8f0;
+    }
+    
+    .sidebar-folder > span::before { 
+      content: '▼'; 
+      display: inline-block; 
+      margin-right: 12px; 
+      font-size: 0.7em; 
+      transition: transform 0.2s ease;
+      color: #adb5bd;
+    }
+    
+    .sidebar-folder.collapsed > span::before { 
+      transform: rotate(-90deg); 
+    }
+    
+    .sidebar-folder > ul { 
+      margin-left: 20px; 
+      margin-top: 0; 
+      padding-left: 0; 
+      border-left: 2px solid #2d3748; 
+      transition: all 0.3s ease;
+      position: relative;
+      max-height: 1000px;
+      overflow: hidden;
+      list-style: none;
+    }
+
+    .sidebar-folder.collapsed > ul {
+      max-height: 0;
+      margin-top: 0;
+      margin-bottom: 0;
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .sidebar-folder > ul::before {
+      content: '';
+      position: absolute;
+      left: -2px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, #ffffff 0%, transparent 100%);
+      opacity: 0.3;
+    }
+    
+    .sidebar-file { 
+      list-style: none; 
+      margin-bottom: 2px;
+      margin-left: 0;
+    }
+    
+    .sidebar-file a { 
+      color: #f8f9fa; 
+      text-decoration: none; 
+      display: block; 
+      padding: 8px 24px 8px 24px;
+      transition: all 0.2s ease; 
+      font-size: 0.9em;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .sidebar-file a:hover { 
+      background: linear-gradient(90deg, transparent 0%, #2d3748 100%);
+      color: #e2e8f0;
+      padding-left: 28px;
+    }
+    
+    .sidebar-file a.active { 
+      background: linear-gradient(90deg, #ffffff 0%, #2d3748 100%);
+      color: #0a0a0a;
+      font-weight: 600;
+      padding-left: 28px;
+    }
+
+    .sidebar-file a.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: #ffffff;
+    }
+
+    .sidebar-file a.active .card__bullets li::before {
+      content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' width='8' title='check' fill='%23ff6b35'%3E%3Cpath d='M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z' /%3E%3C/svg%3E");
+    }
+    
+    .graph-sidebar {
+      width: 420px;
+      background: #0a0a0a;
+      border-left: 1px solid #2d3748;
+      overflow-y: auto;
+      position: fixed;
+      height: calc(100vh - 80px);
+      top: 80px;
+      right: 0;
+      z-index: 1000;
+      box-shadow: -2px 0 20px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease;
+      min-width: 200px;
+      max-width: 600px;
+    }
+
+    .graph-sidebar.resizing {
+      transition: none;
+    }
+
+    .resize-handle {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 4px;
+      height: 100%;
+      background: transparent;
+      cursor: col-resize;
+      z-index: 1001;
+    }
+
+    .resize-handle:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .resize-handle:active {
+      background: rgba(255, 255, 255, 0.4);
+    }
+    
+    .graph-header {
+      padding: 0;
+      border-bottom: none;
+      background: none;
+      text-align: center;
+      height: 0;
+      overflow: hidden;
+    }
+    
+    .graph-title {
+      font-size: 1.1em;
+      font-weight: 600;
+      color: #adb5bd;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      font-size: 0.9em;
+    }
+    
+    .graph-container {
+      height: calc(100vh - 80px);
+      width: 100%;
+      background: #0a0a0a;
+      border: 1px solid #2d3748;
+    }
+    
+    .main-content { 
+      flex: 1; 
+      margin-left: 320px; 
+      margin-right: 420px;
+      padding: 40px 60px 60px 60px; 
+      max-width: calc(100vw - 740px);
+      transition: margin-left 0.3s ease, margin-right 0.3s ease;
+    }
+
+    /* 블로그 포스트 내용의 리스트 스타일 - 불렛 표시 */
+    .blog-post ul {
+      list-style-type: disc;
+      padding-left: 24px;
+      margin: 16px 0;
+    }
+    
+    .blog-post ul li {
+      margin-bottom: 8px;
+      line-height: 1.6;
+    }
+    
+    .blog-post ol {
+      list-style-type: decimal;
+      padding-left: 24px;
+      margin: 16px 0;
+    }
+    
+    .blog-post ol li {
+      margin-bottom: 8px;
+      line-height: 1.6;
+    }
+    
+    .blog-post ul ul {
+      list-style-type: circle;
+      margin: 8px 0;
+    }
+    
+    .blog-post ul ul ul {
+      list-style-type: square;
+    }
+    
+    .welcome { 
+      text-align: center; 
+      max-width: 600px;
+      margin: 0 auto; 
+      padding: 60px 0;
+    }
+    
+    .welcome h1 { 
+      font-size: 3em;
+      font-weight: 700;
+      margin-bottom: 20px;
+      background: linear-gradient(45deg, #ffffff, #adb5bd);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .welcome p { 
+      font-size: 1.2em;
+      color: #adb5bd; 
+      line-height: 1.6;
+    }
+    
+    .blog-post { 
+      max-width: 800px;
+      margin: 0 auto; 
+      background: #0a0a0a;
+      padding: 40px;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .blog-post h1 {
+      font-size: 2.5em;
+      font-weight: 700;
+      margin-bottom: 24px;
+      color: #ffffff; 
+      border-bottom: 2px solid #2d3748;
+      padding-bottom: 16px;
+    }
+    
+    .blog-post h2, .blog-post h3, .blog-post h4 {
+      margin-top: 32px;
+      margin-bottom: 16px;
+      color: #e2e8f0;
+    }
+    
+    .blog-post p { 
+      margin-bottom: 16px;
+      line-height: 1.8;
+    }
+    
+    .blog-post img {
+      max-width: 100%;
+      height: auto;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      margin: 24px 0;
+    }
+    
+    .blog-post code { 
+      background: #1a202c; 
+      padding: 4px 8px;
+      font-family: 'Monaco', 'Menlo', 'SF Mono', monospace;
+      font-size: 0.9em;
+      color: #e2e8f0;
+    }
+    
+    .blog-post pre { 
+      background: #1a202c; 
+      padding: 20px; 
+      overflow-x: auto; 
+      margin: 20px 0;
+      border: 1px solid #2d3748;
+    }
+    
+    .blog-post pre code { 
+      background: none; 
+      padding: 0; 
+    }
+    
+    .blog-post blockquote { 
+      border-left: 4px solid #ffffff;
+      padding-left: 20px;
+      margin: 20px 0;
+      font-style: italic; 
+      color: #adb5bd; 
+    }
+    
+    .blog-post ul, .blog-post ol {
+      margin: 16px 0;
+      padding-left: 24px;
+    }
+    
+    .blog-post li {
+      margin-bottom: 8px;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #adb5bd;
+    }
+    
+    .loading::after {
+      content: '';
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #2d3748;
+      border-top: 2px solid #ffffff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-left: 10px;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .error {
+      text-align: center;
+      padding: 40px;
+      color: #ff6b6b;
+      background: #2d1b1b;
+      border: 1px solid #4a2c2c;
+    }
+    
+    .status-indicator {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 8px 16px;
+      background: #1a202c;
+      border: 1px solid #2d3748; 
+      font-size: 0.8em;
+      color: #adb5bd;
+      z-index: 1003;
+      transition: all 0.3s ease;
+    }
+    
+    .status-indicator.online {
+      background: #0f5132;
+      border-color: #198754;
+      color: #d1e7dd;
+    }
+    
+    .status-indicator.updating {
+      background: #664d03;
+      border-color: #ffc107;
+      color: #fff3cd;
+    }
+    
+    /* 모바일 반응형 개선 */
+    @media (max-width: 768px) {
+      .header {
+        padding: 0 20px;
+        height: 70px;
+      }
+      
+      .logo {
+        font-size: 1.8em;
+      }
+      
+      .hamburger {
+        display: flex;
+      }
+      
+      /* 그래프 토글 버튼 추가 */
+      .graph-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 56px;
+        height: 56px;
+      background: #1a202c; 
+        border: 2px solid #2d3748;
+      color: #ffffff; 
+        font-size: 1.2em;
+        z-index: 1004;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+      .graph-toggle:hover {
+      background: #2d3748;
+        border-color: #4a5568;
+      }
+      
+      .graph-toggle:active {
+        transform: scale(0.95);
+      }
+      
+      .sidebar {
+        transform: translateX(-100%);
+        width: 300px;
+        height: 100vh;
+        top: 0;
+        z-index: 1005;
+        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.5);
+      }
+      
+      .sidebar.open {
+        transform: translateX(0);
+      }
+      
+      .graph-sidebar {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: #0a0a0a;
+        z-index: 1006;
+        transform: translateY(100%);
+        transition: transform 0.3s ease;
+      }
+      
+      .graph-sidebar.open {
+        display: block;
+        transform: translateY(0);
+      }
+      
+      .graph-container {
+        height: 100vh;
+        padding-top: 60px;
+      }
+      
+      .main-content {
+        margin-left: 0;
+        margin-right: 0;
+        padding: 25px 20px;
+        max-width: 100%;
+        margin-top: 70px;
+        padding-bottom: 80px; /* 그래프 토글 버튼 공간 확보 */
+      }
+      
+      .blog-post {
+        padding: 25px 20px;
+      }
+      
+      .blog-post h1 {
+        font-size: 1.9em;
+        line-height: 1.3;
+        margin-bottom: 20px;
+      }
+      
+      .blog-post h2 {
+        font-size: 1.6em;
+        margin-top: 30px;
+        margin-bottom: 15px;
+      }
+      
+      .blog-post h3 {
+        font-size: 1.4em;
+        margin-top: 25px;
+        margin-bottom: 12px;
+      }
+      
+      .blog-post p {
+        font-size: 1.1em;
+        line-height: 1.7;
+        margin-bottom: 18px;
+      }
+      
+      /* 터치 친화적 링크 크기 */
+      .sidebar-file a {
+        padding: 12px 20px;
+        font-size: 1em;
+        line-height: 1.4;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+      }
+      
+      .sidebar-folder > span {
+        padding: 15px 20px;
+        font-size: 1.05em;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+      }
+      
+      .search-box {
+        margin: 20px;
+      }
+      
+      .search-box input {
+        padding: 12px 16px;
+        font-size: 1em;
+        min-height: 44px;
+      }
+      
+      .search-result-item {
+        padding: 12px 16px;
+        font-size: 1em;
+        min-height: 44px;
+      }
+      
+      .status-indicator {
+        top: 85px;
+        right: 15px;
+        font-size: 0.8em;
+        padding: 8px 12px;
+      }
+      
+      .content-wrapper {
+        margin-top: 70px;
+      }
+      
+      .welcome h1 {
+        font-size: 2.4em;
+        margin-bottom: 25px;
+      }
+      
+      .welcome p {
+        font-size: 1.1em;
+        line-height: 1.6;
+      }
+      
+      /* 옵시디언 링크 터치 개선 */
+      .obsidian-link {
+        padding: 2px 4px;
+        min-height: 32px;
+        display: inline-block;
+        line-height: 1.4;
+      }
+      
+      /* 모바일에서 닫기 버튼 표시 */
+      .close-btn {
+        display: flex;
+      }
+      
+      /* 터치 스크롤 최적화 */
+      .sidebar {
+        -webkit-overflow-scrolling: touch;
+        overflow-y: auto;
+      }
+      
+      .graph-sidebar {
+        -webkit-overflow-scrolling: touch;
+        overflow-y: auto;
+      }
+      
+      .main-content {
+        -webkit-overflow-scrolling: touch;
+      }
+      
+      /* 터치 하이라이트 제거 */
+      * {
+        -webkit-tap-highlight-color: transparent;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .header {
+        padding: 0 15px;
+        height: 65px;
+      }
+      
+      .logo {
+        font-size: 1.5em;
+      }
+      
+      .hamburger {
+        padding: 8px;
+      }
+      
+      .hamburger span {
+        width: 24px;
+        height: 2px;
+        margin: 3px 0;
+      }
+      
+      .graph-toggle {
+        bottom: 15px;
+        right: 15px;
+        width: 52px;
+        height: 52px;
+        font-size: 1.1em;
+      }
+      
+      .main-content {
+        padding: 20px 15px;
+        margin-top: 65px;
+        padding-bottom: 75px;
+      }
+      
+      .blog-post {
+        padding: 20px 15px;
+      }
+      
+      .blog-post h1 {
+        font-size: 1.6em;
+        line-height: 1.3;
+        margin-bottom: 18px;
+      }
+      
+      .blog-post h2 {
+        font-size: 1.4em;
+        margin-top: 25px;
+        margin-bottom: 12px;
+      }
+      
+      .blog-post h3 {
+        font-size: 1.2em;
+        margin-top: 20px;
+        margin-bottom: 10px;
+      }
+      
+      .blog-post p {
+        font-size: 1em;
+        line-height: 1.6;
+        margin-bottom: 16px;
+      }
+      
+      /* 더 작은 화면에서 터치 영역 최적화 */
+      .sidebar-file a {
+        padding: 14px 18px;
+        font-size: 0.95em;
+        min-height: 48px;
+      }
+      
+      .sidebar-folder > span {
+        padding: 16px 18px;
+        font-size: 1em;
+        min-height: 48px;
+      }
+      
+      .status-indicator {
+        top: 75px;
+        right: 10px;
+        font-size: 0.75em;
+        padding: 6px 10px;
+      }
+      
+      .content-wrapper {
+        margin-top: 65px;
+      }
+      
+      .welcome h1 {
+        font-size: 2em;
+        margin-bottom: 20px;
+      }
+      
+      .welcome p {
+        font-size: 1em;
+        line-height: 1.5;
+        padding: 0 10px;
+      }
+      
+      .sidebar { 
+        width: 280px; 
+      }
+      
+      .search-box {
+        margin: 15px;
+      }
+      
+      .search-box input {
+        padding: 12px 14px;
+        font-size: 0.95em;
+        min-height: 44px;
+      }
+      
+      .search-result-item {
+        padding: 12px 14px;
+        font-size: 0.95em;
+        min-height: 44px;
+      }
+      
+      /* 옵시디언 링크 작은 화면 최적화 */
+      .obsidian-link {
+        padding: 3px 5px;
+        font-size: 0.95em;
+        min-height: 30px;
+      }
+      
+      /* 모바일에서 닫기 버튼 표시 */
+      .close-btn {
+        display: flex;
+      }
+    }
+    
+    /* 태블릿 크기 */
+    @media (min-width: 769px) and (max-width: 1200px) {
+      .graph-sidebar {
+        width: 280px;
+      }
+      
+      .main-content { 
+        margin-right: 280px;
+        max-width: calc(100vw - 600px);
+      }
+    }
+
+    /* 옵시디언 스타일 링크 */
+    .obsidian-link {
+      color: #007acc;
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    
+    .obsidian-link:hover {
+      color: #005a9e;
+      border-bottom-color: #007acc;
+    }
+    
+    .obsidian-link-broken {
+      color: #dc3545;
+      text-decoration: line-through;
+      cursor: help;
+    }
+    
+    .obsidian-link-broken:hover {
+      color: #c82333;
+    }
+
+    /* 데스크탑에서 모바일 전용 요소 숨기기 */
+    .graph-toggle {
+      display: none;
+    }
+    
+    .close-btn {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="logo">
+        GO
+      </div>
+      <button class="hamburger" id="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </header>
+    
+    <div class="status-indicator" id="status-indicator">
+      연결 확인 중...
+    </div>
+    
+    <div class="content-wrapper">
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-resize-handle" id="sidebar-resize-handle"></div>
+        <button class="close-btn" id="sidebar-close-btn">×</button>
+        <div class="sidebar-header">
+        </div>
+        
+        <div class="search-box">
+          <input type="text" id="search-input" placeholder="검색...">
+          <div class="search-results" id="search-results"></div>
+        </div>
+        
+        <div class="sidebar-content">
+          <ul id="sidebar-blog-list">
+            <!-- 🚀 완전 동적 로딩 전용 - 하드코딩 금지! -->
+          </ul>
+        </div>
+      </aside>
+      
+      <main class="main-content">
+        <div id="content">
+          <div class="welcome">
+            <h1>GO의 디지털 가든</h1>
+            <p>사이드바에서 원하는 글을 선택하세요.<br>
+            실시간으로 업데이트되는 옵시디언 블로그입니다.</p>
+          </div>
+        </div>
+      </main>
+
+      <aside class="graph-sidebar" id="graph-sidebar">
+        <div class="resize-handle" id="resize-handle"></div>
+        <button class="close-btn" id="graph-close-btn">×</button>
+        <div class="graph-header">
+    </div>
+        <div class="graph-container" id="graph-container"></div>
+      </aside>
+    </div>
+    
+    <!-- 모바일 그래프 토글 버튼 -->
+    <button class="graph-toggle" id="graph-toggle">🕸️</button>
+  </div>
+
+<script>
+    // �� 완전 동적 로딩 시스템 v2.0
+  const ERROR_TITLE = "오류";
+  const ERROR_MSG = "글을 불러올 수 없습니다.";
+  
+  let currentSlug = null;
+  let updateInterval = null;
+  let sidebarUpdateInterval = null;
+    let allPosts = [];
+    let isOnline = false;
+    
+    // 전역 변수 추가
+    let lastUpdateHash = '';
+    let userScrolling = false;
+    let graphNetwork = null;
+    let isResizing = false;
+    let startX = 0;
+    let startWidth = 0;
+    
+    // 좌측 사이드바 리사이즈 변수
+    let isLeftResizing = false;
+    let leftStartX = 0;
+    let leftStartWidth = 0;
+    
+    // 추가 변수들
+    let scrollTimeout = null;
+    let graphData = { nodes: new vis.DataSet(), edges: new vis.DataSet() };
+    
+    // 사용자 스크롤 감지
+    window.addEventListener('scroll', function() {
+      userScrolling = true;
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(function() {
+        userScrolling = false;
+      }, 2000);
+    });
+
+    // DOM 요소
+    const contentDiv = document.getElementById('content');
+    const sidebarList = document.getElementById('sidebar-blog-list');
+    const searchInput = document.getElementById('search-input');
+    const searchResults = document.getElementById('search-results');
+    const statusIndicator = document.getElementById('status-indicator');
+    const hamburger = document.getElementById('hamburger');
+    const sidebar = document.getElementById('sidebar');
+    const graphSidebar = document.getElementById('graph-sidebar');
+    const graphContainer = document.getElementById('graph-container');
+
+    // 상태 표시기 업데이트
+    function updateStatusIndicator(status, message) {
+      statusIndicator.textContent = message;
+      statusIndicator.className = 'status-indicator ' + status;
+    }
+    
+    // 로딩 상태 표시
+    function showLoading() {
+      contentDiv.innerHTML = '<div class="loading">로딩 중...</div>';
+    }
+    
+    // 에러 상태 표시
+    function showError(message = ERROR_MSG) {
+      contentDiv.innerHTML = `<div class="error"><h2>${ERROR_TITLE}</h2><p>${message}</p></div>`;
+    }
+    
+    // 블로그 포스트 로드
+  function loadBlogPost(slug) {
+    currentSlug = slug;
+      showLoading();
+      
+      // 모바일 최적화: 절대 경로와 캐시 방지
+      const url = `${window.location.origin}/blog/${slug}.html?t=${Date.now()}`;
+      
+      fetch(url)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('포스트를 찾을 수 없습니다.');
+          }
+          return response.text();
+        })
+        .then(html => {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, 'text/html');
+          const article = doc.querySelector('article');
+          const title = doc.querySelector('h1');
+          
+        if (article && title) {
+            contentDiv.innerHTML = `<div class="blog-post"><h1>${title.textContent}</h1>${article.innerHTML}</div>`;
+            updateStatusIndicator('online', '온라인');
+            isOnline = true;
+            
+            // 옵시디언 스타일 링크 변환
+            convertObsidianLinks(contentDiv);
+            
+            // 모바일에서 스크롤 최상단으로 이동
+            if (window.innerWidth <= 768) {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        } else {
+            showError('포스트 내용을 파싱할 수 없습니다.');
+          }
+        })
+        .catch(error => {
+          console.error('포스트 로드 실패:', error);
+          showError(`포스트를 불러올 수 없습니다: ${error.message}`);
+          updateStatusIndicator('offline', '오프라인');
+          isOnline = false;
+        });
+    }
+    
+    // 🚀 완전 새로운 사이드바 업데이트 시스템
+  function updateSidebar() {
+      // 사용자가 스크롤 중이면 업데이트 건너뛰기
+      if (userScrolling) {
+        console.log('📱 스크롤 중이므로 업데이트 건너뛰기');
+        return;
+      }
+
+      updateStatusIndicator('updating', '업데이트 중...');
+      
+      // 모바일 최적화: 절대 경로와 캐시 방지
+      const url = `${window.location.origin}/blog-list.json?t=${Date.now()}`;
+      
+      fetch(url)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('목록을 불러올 수 없습니다.');
+          }
+          return response.json();
+        })
+        .then(data => {
+          // 스마트 업데이트: 내용이 실제로 바뀌었는지 확인
+          const currentHash = JSON.stringify(data).slice(0, 100); // 간단한 해시
+          
+          if (lastUpdateHash === currentHash) {
+            console.log('📋 변경사항 없음 - DOM 업데이트 건너뛰기');
+            updateStatusIndicator('online', '최신 상태');
+            return;
+          }
+          
+          lastUpdateHash = currentHash;
+          
+        if (sidebarList && data.blogList) {
+            // 완전히 새로운 내용으로 교체 (중복 방지)
+          sidebarList.innerHTML = data.blogList;
+            allPosts = data.posts || [];
+            
+            // 이벤트 리스너 재등록
+            registerEventListeners();
+            
+            // 그래프 업데이트
+            updateGraph();
+            
+            // 현재 선택된 항목 하이라이트 (DOM 업데이트 후 실행)
+          if (currentSlug) {
+              setTimeout(() => {
+                document.querySelectorAll('.blog-link').forEach(link => {
+              if (link.getAttribute('data-slug') === currentSlug) {
+                link.classList.add('active');
+              } else {
+                link.classList.remove('active');
+              }
+            });
+                console.log('🎯 사이드바 active 상태 복원:', currentSlug);
+              }, 100);
+            }
+            
+            updateStatusIndicator('online', '최신 상태');
+            isOnline = true;
+            console.log('✅ 사이드바 업데이트 완료:', data.totalPosts + '개 포스트');
+          }
+        })
+        .catch(error => {
+          console.error('사이드바 업데이트 실패:', error);
+          updateStatusIndicator('offline', '오프라인');
+          isOnline = false;
+      });
+  }
+  
+  // 현재 콘텐츠 업데이트
+  function updateCurrentContent() {
+      if (currentSlug && isOnline) {
+      loadBlogPost(currentSlug);
+    }
+  }
+  
+    // 검색 기능
+    function performSearch(query) {
+      if (!query.trim()) {
+        searchResults.style.display = 'none';
+        return;
+      }
+      
+      const results = allPosts.filter(post => 
+        post.title.toLowerCase().includes(query.toLowerCase()) ||
+        post.path.toLowerCase().includes(query.toLowerCase())
+      );
+      
+      if (results.length === 0) {
+        searchResults.innerHTML = '<div class="search-result-item">검색 결과가 없습니다.</div>';
+      } else {
+        searchResults.innerHTML = results.map(post => 
+          `<div class="search-result-item" data-slug="${post.slug}">${post.title}</div>`
+        ).join('');
+      }
+      
+      searchResults.style.display = 'block';
+      
+      // 모바일에서 검색 결과 클릭 이벤트 추가
+      document.querySelectorAll('.search-result-item').forEach(item => {
+        const slug = item.getAttribute('data-slug');
+        if (slug) {
+          // 클릭 이벤트
+          item.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // 사이드바 링크 상태 업데이트
+            document.querySelectorAll('.blog-link').forEach(link => {
+              if (link.getAttribute('data-slug') === slug) {
+                link.classList.add('active');
+              } else {
+                link.classList.remove('active');
+              }
+            });
+            
+            // 검색 결과 숨기기
+            searchResults.style.display = 'none';
+            searchInput.value = '';
+            
+            // 모바일에서 사이드바 닫기
+            if (window.innerWidth <= 768) {
+              const sidebar = document.querySelector('.sidebar');
+              sidebar.classList.remove('open');
+            }
+            
+            // 글 로드
+            loadBlogPost(slug);
+            window.location.hash = '#' + slug;
+          });
+          
+          // 모바일 터치 이벤트 추가
+          item.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // 사이드바 링크 상태 업데이트
+            document.querySelectorAll('.blog-link').forEach(link => {
+              if (link.getAttribute('data-slug') === slug) {
+                link.classList.add('active');
+              } else {
+                link.classList.remove('active');
+              }
+            });
+            
+            // 검색 결과 숨기기
+            searchResults.style.display = 'none';
+            searchInput.value = '';
+            
+            // 모바일에서 사이드바 닫기
+            if (window.innerWidth <= 768) {
+              const sidebar = document.querySelector('.sidebar');
+              sidebar.classList.remove('open');
+            }
+            
+            // 글 로드
+            loadBlogPost(slug);
+            window.location.hash = '#' + slug;
+          });
+        }
+      });
+    }
+    
+    // 이벤트 리스너 등록
+    function registerEventListeners() {
+      // 폴더 접기/펼치기
+      document.querySelectorAll('.sidebar-folder > span').forEach(folderSpan => {
+      folderSpan.addEventListener('click', function() {
+        folderSpan.parentElement.classList.toggle('collapsed');
+      });
+    });
+    
+      // 블로그 링크 클릭
+      document.querySelectorAll('.blog-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+        e.preventDefault();
+          const slug = this.getAttribute('data-slug');
+        if (slug) {
+            // 즉시 모든 링크의 active 상태 처리
+            document.querySelectorAll('.blog-link').forEach(l => {
+              l.classList.remove('active');
+            });
+            this.classList.add('active');
+            
+            // currentSlug 업데이트
+            currentSlug = slug;
+            
+            // 즉시 그래프 하이라이트 업데이트
+            highlightCurrentPost();
+            
+          loadBlogPost(slug);
+          window.location.hash = '#' + slug;
+            
+            // 모바일에서 사이드바 닫기
+            if (window.innerWidth <= 768) {
+              const sidebar = document.querySelector('.sidebar');
+              sidebar.classList.remove('open');
+        }
+      }
+    });
+    
+        // 모바일 터치 이벤트 추가
+        link.addEventListener('touchstart', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          const slug = this.getAttribute('data-slug');
+          if (slug) {
+            // 즉시 모든 링크의 active 상태 처리
+            document.querySelectorAll('.blog-link').forEach(l => {
+              l.classList.remove('active');
+            });
+            this.classList.add('active');
+            
+            // currentSlug 업데이트
+            currentSlug = slug;
+            
+            // 즉시 그래프 하이라이트 업데이트
+            highlightCurrentPost();
+            
+      loadBlogPost(slug);
+            window.location.hash = '#' + slug;
+            
+            // 모바일에서 사이드바 닫기
+            if (window.innerWidth <= 768) {
+              const sidebar = document.querySelector('.sidebar');
+              sidebar.classList.remove('open');
+            }
+          }
+        });
+      });
+      
+      // 검색 결과 클릭
+      document.querySelectorAll('.search-result-item').forEach(item => {
+        item.addEventListener('click', function() {
+          const slug = this.getAttribute('data-slug');
+          if (slug) {
+            // 사이드바 active 상태 업데이트
+            document.querySelectorAll('.blog-link').forEach(link => {
+              if (link.getAttribute('data-slug') === slug) {
+                link.classList.add('active');
+              } else {
+                link.classList.remove('active');
+              }
+            });
+            
+            // currentSlug 업데이트
+            currentSlug = slug;
+            
+            // 즉시 그래프 하이라이트 업데이트
+            highlightCurrentPost();
+            
+            loadBlogPost(slug);
+            window.location.hash = '#' + slug;
+            searchResults.style.display = 'none';
+            searchInput.value = '';
+            
+            // 모바일에서 사이드바 닫기
+            if (window.innerWidth <= 768) {
+              sidebar.classList.remove('open');
+              hamburger.classList.remove('active');
+            }
+          }
+        });
+      });
+    }
+    
+    // 실시간 업데이트 시작 (주기 늘리기)
+    function startRealtimeUpdates() {
+      sidebarUpdateInterval = setInterval(updateSidebar, 30000); // 30초로 증가
+      updateInterval = setInterval(updateCurrentContent, 60000); // 1분으로 증가
+      console.log('🔄 실시간 업데이트 시작 - 30초/1분 주기');
+    }
+    
+    // 실시간 업데이트 중지
+    function stopRealtimeUpdates() {
+      if (sidebarUpdateInterval) clearInterval(sidebarUpdateInterval);
+      if (updateInterval) clearInterval(updateInterval);
+    }
+
+    // 그래프 네트워크 초기화
+    function initializeGraph() {
+      const options = {
+        nodes: {
+          shape: 'dot',
+          size: 4,
+          font: {
+            size: 14,
+            color: '#ffffff',
+            strokeWidth: 1,
+            strokeColor: '#000000'
+          },
+          color: {
+            background: '#ffffff',
+            border: '#cccccc',
+            highlight: {
+              background: '#ffffff',
+              border: '#ffffff'
+            }
+          },
+          borderWidth: 1,
+          shadow: {
+            enabled: true,
+            color: 'rgba(0,0,0,0.3)',
+            size: 2
+          },
+          scaling: {
+            min: 4,
+            max: 4
+          },
+          chosen: false
+        },
+        edges: {
+          color: {
+            color: '#666666',
+            highlight: '#ffffff',
+            opacity: 0.6
+          },
+          width: 1,
+          smooth: {
+            type: 'continuous',
+            roundness: 0.3
+          },
+          shadow: {
+            enabled: true,
+            color: 'rgba(0,0,0,0.2)',
+            size: 3
+          },
+          scaling: {
+            min: 1,
+            max: 1
+          }
+        },
+        physics: {
+          enabled: true,
+          stabilization: { iterations: 300 },
+          barnesHut: {
+            gravitationalConstant: -2000,
+            centralGravity: 0.8,
+            springLength: 50,
+            springConstant: 0.08,
+            damping: 0.09,
+            avoidOverlap: 0.05
+          }
+        },
+        interaction: {
+          hover: true,
+          tooltipDelay: 200,
+          selectConnectedEdges: false,
+          zoomView: true,
+          dragView: true
+        },
+        configure: {
+          enabled: false
+        },
+        scaling: {
+          nodes: {
+            min: 4,
+            max: 4,
+            drawThreshold: 1
+          },
+          labels: {
+            min: 14,
+            max: 14,
+            drawThreshold: 1
+          }
+        }
+      };
+
+      graphNetwork = new vis.Network(graphContainer, graphData, options);
+      
+      // 확대/축소 시 노드 크기 고정 (옵시디언 스타일)
+      graphNetwork.on('zoom', function(params) {
+        // 모든 노드의 크기를 4로 고정
+        const allNodes = graphData.nodes.get();
+        allNodes.forEach(node => {
+          node.size = 4;
+          node.font = node.font || {};
+          node.font.size = 14;
+        });
+        graphData.nodes.update(allNodes);
+      });
+      
+      // 노드 클릭 이벤트 (옵시디언 스타일)
+      graphNetwork.on('click', function(params) {
+        if (params.nodes.length > 0) {
+          const nodeId = params.nodes[0]; // 이제 nodeId는 slug
+          const post = allPosts.find(p => p.slug === nodeId);
+          if (post) {
+            console.log(`🔗 그래프에서 포스트 클릭: ${post.title}`);
+            
+            // 사이드바 active 상태 업데이트
+            document.querySelectorAll('.blog-link').forEach(link => {
+              if (link.getAttribute('data-slug') === nodeId) {
+                link.classList.add('active');
+              } else {
+                link.classList.remove('active');
+              }
+            });
+            
+            // currentSlug 업데이트
+            currentSlug = nodeId;
+            
+            // 즉시 그래프 하이라이트 업데이트
+            highlightCurrentPost();
+            
+            // 글 로드 (loadBlogPost에서 모든 active 상태 처리)
+            loadBlogPost(nodeId);
+            window.location.hash = '#' + nodeId;
+            
+            console.log(`✅ 그래프 클릭으로 ${post.title} 로드됨`);
+          } else {
+            console.log(`❌ 포스트를 찾을 수 없음: ${nodeId}`);
+          }
+        }
+      });
+
+      // 노드 호버 이벤트 (옵시디언 스타일 - 크기 변경 없음)
+      graphNetwork.on('hoverNode', function(params) {
+        const nodeId = params.node;
+        const post = allPosts.find(p => p.id === nodeId);
+        if (post) {
+          // 호버 시 크기 변경 없음 (옵시디언 스타일)
+          // 단순히 하이라이트만 적용
+        }
+      });
+
+      graphNetwork.on('blurNode', function(params) {
+        const nodeId = params.node;
+        // 호버 해제 시 별도 작업 없음
+      });
+
+      console.log('🕸️ 그래프 네트워크 초기화 완료');
+    }
+
+    // 그래프 데이터 생성 (옵시디언 스타일 - 실제 링크만)
+    function generateGraphData() {
+      const nodes = [];
+      const edges = [];
+      const linkMap = new Map();
+
+      // 각 포스트를 노드로 추가
+      allPosts.forEach(post => {
+        nodes.push({
+          id: post.slug, // slug를 id로 사용 (클릭 시 식별 용이)
+          label: post.title.length > 15 ? post.title.substring(0, 15) + '...' : post.title,
+          title: `${post.title}\n📁 ${post.folder || '기타'}\n📅 ${post.date || '날짜 없음'}`,
+          color: {
+            background: '#ffffff',
+            border: '#cccccc'
+          },
+          font: {
+            color: '#ffffff',
+            size: 14,
+            strokeWidth: 1,
+            strokeColor: '#000000'
+          },
+          size: 4,
+          fixed: false,
+          scaling: {
+            min: 4,
+            max: 4
+          },
+          // 추가 데이터 저장
+          postData: {
+            slug: post.slug,
+            title: post.title,
+            folder: post.folder,
+            date: post.date
+          }
+        });
+      });
+
+      // 실제 링크 파싱 (옵시디언 스타일)
+      allPosts.forEach(post => {
+        const links = extractLinksFromContent(post.content || '');
+        links.forEach(link => {
+          if (!linkMap.has(post.slug)) {
+            linkMap.set(post.slug, []);
+          }
+          linkMap.get(post.slug).push(link);
+        });
+      });
+
+      // 실제 링크를 기반으로 엣지 생성 (옵시디언과 동일)
+      linkMap.forEach((links, sourceSlug) => {
+        links.forEach(targetTitle => {
+          const targetPost = allPosts.find(p => 
+            p.title === targetTitle || 
+            p.title.includes(targetTitle) || 
+            targetTitle.includes(p.title)
+          );
+          if (targetPost && targetPost.slug !== sourceSlug) {
+            // 중복 엣지 방지
+            const existingEdge = edges.find(e => 
+              (e.from === sourceSlug && e.to === targetPost.slug) || 
+              (e.from === targetPost.slug && e.to === sourceSlug)
+            );
+            
+            if (!existingEdge) {
+              const sourcePost = allPosts.find(p => p.slug === sourceSlug);
+              edges.push({
+                from: sourceSlug,
+                to: targetPost.slug,
+                title: `${sourcePost?.title || '알 수 없음'} → ${targetPost.title}`,
+                color: { color: '#666666', opacity: 0.8 },
+                width: 1,
+                smooth: {
+                  type: 'continuous',
+                  roundness: 0.3
+                }
+              });
+            }
+          }
+        });
+      });
+
+      console.log(`🔗 실제 링크 연결: ${edges.length}개 연결선 생성`);
+      return { nodes, edges };
+    }
+
+    // 링크 추출 함수 (옵시디언 스타일)
+    function extractLinksFromContent(content) {
+      if (!content) return [];
+      
+      const links = [];
+      
+      // 1. [[링크]] 형태의 위키링크 파싱
+      const wikiLinkRegex = /\[\[([^\]]+)\]\]/g;
+      let match;
+      
+      while ((match = wikiLinkRegex.exec(content)) !== null) {
+        let linkText = match[1];
+        
+        // | 표시로 별명이 있는 경우 실제 링크만 추출
+        if (linkText.includes('|')) {
+          linkText = linkText.split('|')[0];
+        }
+        
+        // # 표시로 헤더 링크가 있는 경우 파일명만 추출
+        if (linkText.includes('#')) {
+          linkText = linkText.split('#')[0];
+        }
+        
+        if (linkText.trim()) {
+          links.push(linkText.trim());
+        }
+      }
+      
+      // 2. [텍스트](링크) 형태의 마크다운 링크도 파싱 (내부 링크인 경우)
+      const mdLinkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+      while ((match = mdLinkRegex.exec(content)) !== null) {
+        const linkUrl = match[2];
+        // 내부 링크인 경우 (외부 URL이 아닌 경우)
+        if (!linkUrl.startsWith('http') && !linkUrl.startsWith('www')) {
+          let linkText = linkUrl;
+          if (linkText.endsWith('.md')) {
+            linkText = linkText.slice(0, -3);
+          }
+          if (linkText.trim()) {
+            links.push(linkText.trim());
+          }
+        }
+      }
+      
+      return [...new Set(links)]; // 중복 제거
+    }
+
+    // 그래프 업데이트
+    function updateGraph() {
+      if (!graphNetwork) return;
+
+      const newData = generateGraphData();
+      graphData.nodes.clear();
+      graphData.edges.clear();
+      graphData.nodes.add(newData.nodes);
+      graphData.edges.add(newData.edges);
+
+      // 현재 선택된 포스트 하이라이트 및 중심으로 이동
+      highlightCurrentPost();
+
+      console.log(`🕸️ 그래프 업데이트 완료: ${newData.nodes.length}개 노드, ${newData.edges.length}개 엣지`);
+    }
+
+    // 현재 활성 포스트를 하이라이트하고 중심으로 이동
+    function highlightCurrentPost() {
+      if (!graphNetwork || !currentSlug) return;
+
+      // 모든 노드를 흰색으로 초기화
+      const allNodes = graphData.nodes.get();
+      allNodes.forEach(node => {
+        node.color = {
+          background: '#ffffff',
+          border: '#cccccc'
+        };
+      });
+
+      // 현재 활성 포스트를 주황색으로 설정
+      const currentNodeIndex = allNodes.findIndex(node => node.id === currentSlug);
+      if (currentNodeIndex !== -1) {
+        allNodes[currentNodeIndex].color = {
+          background: '#ff6b35',
+          border: '#ff4500'
+        };
+        
+        // 노드들 업데이트
+        graphData.nodes.update(allNodes);
+        
+        // 현재 노드를 중심으로 이동 (애니메이션 포함)
+        setTimeout(() => {
+          graphNetwork.focus(currentSlug, {
+            scale: 1.0,
+            animation: {
+              duration: 800,
+              easingFunction: 'easeInOutQuart'
+            }
+          });
+        }, 100);
+        
+        console.log(`🎯 현재 활성 포스트를 중심으로 이동: ${currentSlug}`);
+      }
+    }
+    
+    // 🚀 초기화
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('🚀 완전 동적 로딩 시스템 시작...');
+      
+      // 초기 사이드바 업데이트
+      updateSidebar();
+      
+      // 검색 기능
+      searchInput.addEventListener('input', function() {
+        performSearch(this.value);
+      });
+      
+      // 검색 결과 외부 클릭 시 숨기기
+      document.addEventListener('click', function(e) {
+        if (!e.target.closest('.search-box')) {
+          searchResults.style.display = 'none';
+        }
+      });
+      
+      // 햄버거 메뉴와 그래프 토글 버튼 이벤트
+      const hamburger = document.querySelector('.hamburger');
+      const sidebar = document.querySelector('.sidebar');
+      const graphToggle = document.querySelector('.graph-toggle');
+      const graphSidebar = document.querySelector('.graph-sidebar');
+      const closeBtns = document.querySelectorAll('.close-btn');
+      
+      // 햄버거 메뉴 클릭 (모바일)
+      if (hamburger) {
+        hamburger.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          sidebar.classList.toggle('open');
+          console.log('🍔 햄버거 메뉴 클릭');
+        });
+        
+        // 모바일 터치 이벤트 추가
+        hamburger.addEventListener('touchstart', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          sidebar.classList.toggle('open');
+          console.log('🍔 햄버거 메뉴 터치');
+        });
+      }
+      
+      // 그래프 토글 버튼 클릭 (모바일)
+      if (graphToggle) {
+        graphToggle.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          graphSidebar.classList.toggle('open');
+          console.log('🕸️ 그래프 토글');
+        });
+        
+        // 모바일 터치 이벤트 추가
+        graphToggle.addEventListener('touchstart', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          graphSidebar.classList.toggle('open');
+          console.log('🕸️ 그래프 토글 터치');
+        });
+      }
+      
+      // 닫기 버튼들
+      closeBtns.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          sidebar.classList.remove('open');
+          graphSidebar.classList.remove('open');
+          console.log('❌ 닫기 버튼 클릭');
+        });
+        
+        // 모바일 터치 이벤트 추가
+        btn.addEventListener('touchstart', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          sidebar.classList.remove('open');
+          graphSidebar.classList.remove('open');
+          console.log('❌ 닫기 버튼 터치');
+        });
+      });
+      
+      // 배경 클릭 시 사이드바 닫기
+      document.addEventListener('click', function(e) {
+        if (window.innerWidth <= 768) {
+          if (!sidebar.contains(e.target) && !hamburger.contains(e.target)) {
+            sidebar.classList.remove('open');
+          }
+          if (!graphSidebar.contains(e.target) && !graphToggle.contains(e.target)) {
+            graphSidebar.classList.remove('open');
+          }
+        }
+      });
+      
+      // 모바일 배경 터치 이벤트
+      document.addEventListener('touchstart', function(e) {
+        if (window.innerWidth <= 768) {
+          if (!sidebar.contains(e.target) && !hamburger.contains(e.target)) {
+            sidebar.classList.remove('open');
+          }
+          if (!graphSidebar.contains(e.target) && !graphToggle.contains(e.target)) {
+            graphSidebar.classList.remove('open');
+          }
+        }
+      });
+      
+      // ESC 키로 사이드바 닫기
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          sidebar.classList.remove('open');
+          graphSidebar.classList.remove('open');
+        }
+      });
+      
+      // 모바일 viewport 변경 감지
+      let resizeTimer;
+      window.addEventListener('resize', function() {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function() {
+          if (window.innerWidth > 768) {
+            sidebar.classList.remove('open');
+            graphSidebar.classList.remove('open');
+          }
+          
+          // 그래프 네트워크 재조정
+          if (graphNetwork) {
+            graphNetwork.fit();
+          }
+        }, 250);
+      });
+      
+      // 해시 변경 감지
+    window.addEventListener('hashchange', function() {
+        const slug = window.location.hash.substring(1);
+      if (slug) {
+          currentSlug = slug;
+          highlightCurrentPost();
+        loadBlogPost(slug);
+      }
+    });
+      
+      // 초기 해시 처리
+      if (window.location.hash) {
+        const slug = window.location.hash.substring(1);
+        if (slug) {
+          currentSlug = slug;
+          loadBlogPost(slug);
+          // 초기 해시의 경우 그래프가 아직 초기화되지 않았을 수 있으므로 setTimeout 사용
+          setTimeout(() => {
+            highlightCurrentPost();
+          }, 1000);
+        }
+      }
+    
+    // 실시간 업데이트 시작
+    startRealtimeUpdates();
+    
+    // 페이지 포커스/블러 시 업데이트 제어
+    document.addEventListener('visibilitychange', function() {
+      if (document.hidden) {
+        stopRealtimeUpdates();
+      } else {
+        startRealtimeUpdates();
+      }
+    });
+
+      // 그래프 네트워크 초기화
+      initializeGraph();
+
+      // 사이드바 리사이징 기능 초기화
+      initializeSidebarResize();
+
+      // 사이드바 리사이징 기능 구현
+      function initializeSidebarResize() {
+        const graphSidebar = document.getElementById('graph-sidebar');
+        const resizeHandle = document.getElementById('resize-handle');
+        const leftSidebar = document.getElementById('sidebar');
+        const leftResizeHandle = document.getElementById('sidebar-resize-handle');
+        const mainContent = document.querySelector('.main-content');
+        
+        // 초기 사이드바 너비에 맞춰 메인 콘텐츠 조정
+        if (mainContent) {
+          mainContent.style.marginRight = graphSidebar.offsetWidth + 'px';
+          mainContent.style.marginLeft = leftSidebar.offsetWidth + 'px';
+        }
+        
+        // 우측 그래프 사이드바 리사이즈
+        resizeHandle.addEventListener('mousedown', function(e) {
+          isResizing = true;
+          startX = e.clientX;
+          startWidth = graphSidebar.offsetWidth;
+          graphSidebar.classList.add('resizing');
+          document.body.style.cursor = 'col-resize';
+          e.preventDefault();
+        });
+        
+        // 좌측 사이드바 리사이즈
+        leftResizeHandle.addEventListener('mousedown', function(e) {
+          isLeftResizing = true;
+          leftStartX = e.clientX;
+          leftStartWidth = leftSidebar.offsetWidth;
+          leftSidebar.classList.add('resizing');
+          document.body.style.cursor = 'col-resize';
+          e.preventDefault();
+        });
+        
+        document.addEventListener('mousemove', function(e) {
+          // 우측 그래프 사이드바 리사이즈
+          if (isResizing) {
+            const deltaX = startX - e.clientX;
+            const newWidth = startWidth + deltaX;
+            
+            // 최소, 최대 크기 제한
+            const minWidth = 200;
+            const maxWidth = 600;
+            const constrainedWidth = Math.max(minWidth, Math.min(newWidth, maxWidth));
+            
+            graphSidebar.style.width = constrainedWidth + 'px';
+            
+            // 메인 콘텐츠 영역 조정
+            if (mainContent) {
+              mainContent.style.marginRight = constrainedWidth + 'px';
+            }
+            
+            // 그래프 컨테이너 크기 조정
+            if (graphNetwork) {
+              setTimeout(() => {
+                graphNetwork.fit();
+              }, 10);
+            }
+          }
+          
+          // 좌측 사이드바 리사이즈
+          if (isLeftResizing) {
+            const deltaX = e.clientX - leftStartX;
+            const newWidth = leftStartWidth + deltaX;
+            
+            // 최소, 최대 크기 제한
+            const minWidth = 200;
+            const maxWidth = 600;
+            const constrainedWidth = Math.max(minWidth, Math.min(newWidth, maxWidth));
+            
+            leftSidebar.style.width = constrainedWidth + 'px';
+            
+            // 메인 콘텐츠 영역 조정
+            if (mainContent) {
+              mainContent.style.marginLeft = constrainedWidth + 'px';
+            }
+          }
+        });
+        
+        document.addEventListener('mouseup', function() {
+          if (isResizing) {
+            isResizing = false;
+            graphSidebar.classList.remove('resizing');
+            document.body.style.cursor = '';
+            
+            // 그래프 네트워크 재조정
+            if (graphNetwork) {
+              setTimeout(() => {
+                graphNetwork.fit();
+              }, 100);
+            }
+          }
+          
+          if (isLeftResizing) {
+            isLeftResizing = false;
+            leftSidebar.classList.remove('resizing');
+            document.body.style.cursor = '';
+          }
+        });
+      }
+      updateGraph(); // 초기 그래프 데이터 로드
+    });
+
+    // 옵시디언 스타일 링크를 클릭 가능한 링크로 변환
+    function convertObsidianLinks(element) {
+      if (!element) return;
+      
+      // [[링크]] 형태를 찾아서 클릭 가능한 링크로 변환
+      const walker = document.createTreeWalker(
+        element,
+        NodeFilter.SHOW_TEXT,
+        null,
+        false
+      );
+      
+      const textNodes = [];
+      let node;
+      
+      while (node = walker.nextNode()) {
+        if (node.nodeValue.includes('[[') && node.nodeValue.includes(']]')) {
+          textNodes.push(node);
+        }
+      }
+      
+      textNodes.forEach(textNode => {
+        const content = textNode.nodeValue;
+        const linkRegex = /\[\[([^\]]+)\]\]/g;
+        
+        if (linkRegex.test(content)) {
+          const newContent = content.replace(linkRegex, (match, linkText) => {
+            // | 표시로 별명이 있는 경우 처리
+            let actualLink = linkText;
+            let displayText = linkText;
+            
+            if (linkText.includes('|')) {
+              const parts = linkText.split('|');
+              actualLink = parts[0].trim();
+              displayText = parts[1].trim();
+            }
+            
+            // # 표시로 헤더 링크가 있는 경우 파일명만 사용
+            if (actualLink.includes('#')) {
+              actualLink = actualLink.split('#')[0];
+            }
+            
+            // 해당 포스트가 존재하는지 확인
+            const targetPost = allPosts.find(p => 
+              p.title === actualLink || 
+              p.title.toLowerCase() === actualLink.toLowerCase() ||
+              p.slug.includes(actualLink.toLowerCase().replace(/\s+/g, '-'))
+            );
+            
+            if (targetPost) {
+              return `<a href="#${targetPost.slug}" class="obsidian-link" data-slug="${targetPost.slug}">${displayText}</a>`;
+            } else {
+              // 존재하지 않는 링크는 빨간색으로 표시
+              return `<span class="obsidian-link-broken" title="존재하지 않는 링크: ${actualLink}">${displayText}</span>`;
+            }
+          });
+          
+          // 새로운 HTML 내용으로 교체
+          const wrapper = document.createElement('div');
+          wrapper.innerHTML = newContent;
+          
+          // 텍스트 노드를 새로운 요소들로 교체
+          const parent = textNode.parentNode;
+          while (wrapper.firstChild) {
+            parent.insertBefore(wrapper.firstChild, textNode);
+          }
+          parent.removeChild(textNode);
+        }
+      });
+      
+      // 변환된 옵시디언 링크에 클릭 이벤트 추가
+      element.querySelectorAll('.obsidian-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          const slug = this.getAttribute('data-slug');
+          if (slug) {
+            // 사이드바 active 상태 업데이트
+            document.querySelectorAll('.blog-link').forEach(l => {
+              if (l.getAttribute('data-slug') === slug) {
+                l.classList.add('active');
+              } else {
+                l.classList.remove('active');
+              }
+            });
+            
+            // currentSlug 업데이트
+            currentSlug = slug;
+            
+            // 즉시 그래프 하이라이트 업데이트
+            highlightCurrentPost();
+            
+            loadBlogPost(slug);
+            window.location.hash = '#' + slug;
+          }
+        });
+      });
+    }
+  </script>
+</body>
+</html>
