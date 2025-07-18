@@ -1401,6 +1401,9 @@
             // 이벤트 리스너 재등록
             registerEventListeners();
             
+            // 폴더 기본 상태 설정
+            setDefaultFolderStates();
+            
             // 그래프 업데이트
             updateGraph();
             
@@ -1522,14 +1525,31 @@
       });
     }
     
+    // 폴더 기본 상태 설정
+    function setDefaultFolderStates() {
+      // 기본적으로 열어둘 폴더들 (폴더명으로 설정)
+      const defaultOpenFolders = []; // 원하는 폴더만 여기에 추가, 작은따옴표 안에 넣으면 된다!!! 중요!!
+      
+      document.querySelectorAll('.sidebar-folder > span').forEach(folderSpan => {
+        const folderName = folderSpan.textContent.trim();
+        if (defaultOpenFolders.includes(folderName)) {
+          // 지정한 폴더만 열림
+          folderSpan.parentElement.classList.remove('collapsed');
+        } else {
+          // 나머지 모든 폴더는 닫힘
+          folderSpan.parentElement.classList.add('collapsed');
+        }
+      });
+    }
+    
     // 이벤트 리스너 등록
     function registerEventListeners() {
       // 폴더 접기/펼치기
       document.querySelectorAll('.sidebar-folder > span').forEach(folderSpan => {
-      folderSpan.addEventListener('click', function() {
-        folderSpan.parentElement.classList.toggle('collapsed');
+        folderSpan.addEventListener('click', function() {
+          folderSpan.parentElement.classList.toggle('collapsed');
+        });
       });
-    });
     
       // 블로그 링크 클릭
       document.querySelectorAll('.blog-link').forEach(link => {
