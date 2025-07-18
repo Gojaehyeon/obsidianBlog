@@ -1,52 +1,16 @@
 {
-  "blogList": "<li class=\"sidebar-folder\"><span>개발공부</span><ul>\n  <li class=\"sidebar-file\"><a href=\"#\" class=\"blog-link\" data-slug=\"개발공부/0718-데미안-때리는-날\">0718 - 데미안 때리는 날</a></li>\n  <li class=\"sidebar-file\"><a href=\"#\" class=\"blog-link\" data-slug=\"개발공부/250717-옵셔널\">250717 - 옵셔널</a></li>\n  <li class=\"sidebar-file\"><a href=\"#\" class=\"blog-link\" data-slug=\"개발공부/서버-독립-테스트-212506\">서버-독립-테스트-212506</a></li>\n  <li class=\"sidebar-file\"><a href=\"#\" class=\"blog-link\" data-slug=\"개발공부/안녕하세요\">안녕하세요!</a></li>\n  <li class=\"sidebar-file\"><a href=\"#\" class=\"blog-link\" data-slug=\"개발공부/제대로-글-써보기\">제대로 글 써보기</a></li>\n</ul></li>\n<li class=\"sidebar-folder\"><span>생각정리</span><ul>\n  <li class=\"sidebar-file\"><a href=\"#\" class=\"blog-link\" data-slug=\"생각정리/1시-40분\">1시 40분</a></li>\n  <li class=\"sidebar-file\"><a href=\"#\" class=\"blog-link\" data-slug=\"생각정리/브랜뉴\">브랜뉴!</a></li>\n  <li class=\"sidebar-file\"><a href=\"#\" class=\"blog-link\" data-slug=\"생각정리/테스트\">테스트</a></li>\n  <li class=\"sidebar-file\"><a href=\"#\" class=\"blog-link\" data-slug=\"생각정리/헬로우\">헬로우</a></li>\n  <li class=\"sidebar-file\"><a href=\"#\" class=\"blog-link\" data-slug=\"생각정리/Untitled-1\">Untitled 1</a></li>\n</ul></li>\n<li class=\"sidebar-folder\"><span>go</span><ul>\n  <li class=\"sidebar-file\"><a href=\"#\" class=\"blog-link\" data-slug=\"go/실시간-업데이트-테스트\">실시간-업데이트-테스트</a></li>\n</ul></li>\n",
-  "lastUpdated": "2025-07-18T14:08:45.551Z",
-  "totalPosts": 11,
+  "blogList": "<li class=\"sidebar-folder\"><span>개발공부</span><ul>\n  <li class=\"sidebar-file\"><a href=\"#\" class=\"blog-link\" data-slug=\"개발공부/0717-옵셔널\">0717 옵셔널</a></li>\n  <li class=\"sidebar-file\"><a href=\"#\" class=\"blog-link\" data-slug=\"개발공부/제대로-글-써보기\">제대로 글 써보기</a></li>\n</ul></li>\n<li class=\"sidebar-folder\"><span>생각정리</span><ul>\n  <li class=\"sidebar-file\"><a href=\"#\" class=\"blog-link\" data-slug=\"생각정리/0718-데미안-때리는-날\">0718 - 데미안 때리는 날</a></li>\n  <li class=\"sidebar-file\"><a href=\"#\" class=\"blog-link\" data-slug=\"생각정리/1시-40분\">1시 40분</a></li>\n  <li class=\"sidebar-file\"><a href=\"#\" class=\"blog-link\" data-slug=\"생각정리/브랜뉴\">브랜뉴!</a></li>\n  <li class=\"sidebar-file\"><a href=\"#\" class=\"blog-link\" data-slug=\"생각정리/안녕하세요\">안녕하세요!</a></li>\n  <li class=\"sidebar-file\"><a href=\"#\" class=\"blog-link\" data-slug=\"생각정리/테스트\">테스트</a></li>\n  <li class=\"sidebar-file\"><a href=\"#\" class=\"blog-link\" data-slug=\"생각정리/헬로우\">헬로우</a></li>\n  <li class=\"sidebar-file\"><a href=\"#\" class=\"blog-link\" data-slug=\"생각정리/Untitled-1\">Untitled 1</a></li>\n</ul></li>\n",
+  "lastUpdated": "2025-07-18T16:17:13.705Z",
+  "totalPosts": 9,
   "posts": [
     {
-      "title": "실시간-업데이트-테스트",
-      "slug": "go/실시간-업데이트-테스트",
-      "path": "go/실시간-업데이트-테스트.md",
-      "description": "",
-      "lastModified": "2025-07-18T12:21:03.000Z",
-      "created": "2025-07-18T12:21:03.225Z",
-      "url": "https://baburger.xyz/blog/go/실시간-업데이트-테스트.html"
-    },
-    {
-      "title": "0718 - 데미안 때리는 날",
-      "slug": "개발공부/0718-데미안-때리는-날",
-      "path": "개발공부/0718 - 데미안 때리는 날.md",
-      "description": "데미안은 즐겁나?\n나는 즐겁나?\n안녕하세요.",
-      "lastModified": "2025-07-18T12:29:58.376Z",
-      "created": "2025-07-17T16:58:01.513Z",
-      "url": "https://baburger.xyz/blog/개발공부/0718-데미안-때리는-날.html"
-    },
-    {
-      "title": "250717 - 옵셔널",
-      "slug": "개발공부/250717-옵셔널",
-      "path": "개발공부/250717 - 옵셔널.md",
+      "title": "0717 옵셔널",
+      "slug": "개발공부/0717-옵셔널",
+      "path": "개발공부/0717 옵셔널.md",
       "description": "👀GO:  \n옵셔널, 래핑, 언래핑, if let (현업에서 쓰는 형태) guard let 자세히 설명해줘",
       "lastModified": "2025-07-17T13:38:29.000Z",
       "created": "2025-07-17T13:38:14.188Z",
-      "url": "https://baburger.xyz/blog/개발공부/250717-옵셔널.html"
-    },
-    {
-      "title": "서버-독립-테스트-212506",
-      "slug": "개발공부/서버-독립-테스트-212506",
-      "path": "개발공부/서버-독립-테스트-212506.md",
-      "description": "서버 자동 감지 테스트 Fri Jul 18 21:25:06 KST 2025",
-      "lastModified": "2025-07-18T12:25:07.000Z",
-      "created": "2025-07-18T12:25:07.424Z",
-      "url": "https://baburger.xyz/blog/개발공부/서버-독립-테스트-212506.html"
-    },
-    {
-      "title": "안녕하세요!",
-      "slug": "개발공부/안녕하세요",
-      "path": "개발공부/안녕하세요!.md",
-      "description": "테스트 해보자.\nTEST!\n마크다운\n실시간으로 되나?\nㅋㅋㅋ\n신기하다...\nㅇㅇㅇ",
-      "lastModified": "2025-07-18T12:25:45.399Z",
-      "created": "2025-07-18T00:02:34.273Z",
-      "url": "https://baburger.xyz/blog/개발공부/안녕하세요.html"
+      "url": "https://baburger.xyz/blog/개발공부/0717-옵셔널.html"
     },
     {
       "title": "제대로 글 써보기",
@@ -56,6 +20,15 @@
       "lastModified": "2025-07-18T13:20:02.181Z",
       "created": "2025-07-17T16:00:36.410Z",
       "url": "https://baburger.xyz/blog/개발공부/제대로-글-써보기.html"
+    },
+    {
+      "title": "0718 - 데미안 때리는 날",
+      "slug": "생각정리/0718-데미안-때리는-날",
+      "path": "생각정리/0718 - 데미안 때리는 날.md",
+      "description": "데미안은 즐겁나?\n나는 즐겁나?\n안녕하세요.",
+      "lastModified": "2025-07-18T12:29:58.000Z",
+      "created": "2025-07-17T16:58:01.513Z",
+      "url": "https://baburger.xyz/blog/생각정리/0718-데미안-때리는-날.html"
     },
     {
       "title": "1시 40분",
@@ -83,6 +56,15 @@
       "lastModified": "2025-07-17T15:53:49.651Z",
       "created": "2025-07-17T14:37:10.859Z",
       "url": "https://baburger.xyz/blog/생각정리/브랜뉴.html"
+    },
+    {
+      "title": "안녕하세요!",
+      "slug": "생각정리/안녕하세요",
+      "path": "생각정리/안녕하세요!.md",
+      "description": "테스트 해보자.\nTEST!\n마크다운\n실시간으로 되나?\nㅋㅋㅋ\n신기하다...\nㅇㅇㅇ",
+      "lastModified": "2025-07-18T12:25:45.000Z",
+      "created": "2025-07-18T00:02:34.273Z",
+      "url": "https://baburger.xyz/blog/생각정리/안녕하세요.html"
     },
     {
       "title": "테스트",

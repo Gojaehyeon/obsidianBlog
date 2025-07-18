@@ -37,18 +37,28 @@
       box-sizing: border-box; 
     }
     
+    html {
+      overflow-x: hidden;
+      width: 100%;
+    }
+    
     body { 
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
       background: #0a0a0a; 
       color: #f8f9fa; 
       line-height: 1.6;
       overflow-x: hidden;
+      width: 100%;
+      max-width: 100vw;
     }
     
     .container { 
       display: flex; 
       min-height: 100vh; 
       position: relative;
+      overflow-x: hidden;
+      width: 100%;
+      max-width: 100vw;
     }
     
     .header {
@@ -56,16 +66,18 @@
       top: 0;
       left: 0;
       right: 0;
+      width: 100%;
       height: 80px;
       background: linear-gradient(135deg, #111111 0%, #1a1a1a 50%, #2d2d2d 100%);
       border-bottom: 1px solid #333;
-      z-index: 1002;
+      z-index: 9999;
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 0 40px;
       box-shadow: 0 4px 32px rgba(0, 0, 0, 0.4);
       backdrop-filter: blur(8px);
+      overflow: hidden;
     }
     
     .logo { 
@@ -164,7 +176,7 @@
       width: 320px; 
       background: #0a0a0a;
       border-right: 1px solid #2d3748; 
-      overflow-y: auto; 
+      overflow: hidden;
       position: fixed; 
       height: calc(100vh - 80px);
       top: 80px;
@@ -174,6 +186,8 @@
       transition: transform 0.3s ease;
       min-width: 200px;
       max-width: 600px;
+      display: flex;
+      flex-direction: column;
     }
 
     .sidebar.resizing {
@@ -200,27 +214,33 @@
     }
     
     .sidebar-header { 
-      padding: 0;
-      border-bottom: none;
+      padding: 20px 20px 16px 20px;
+      border-bottom: 1px solid #2d3748;
       background: none;
       margin: 0;
-      height: 0;
-      overflow: hidden;
+      height: auto;
+      overflow: visible;
     }
     
     .sidebar-title {
-      font-size: 1.1em;
+      font-size: 1.2em;
       font-weight: 600;
-      color: #adb5bd;
-      text-align: center;
+      color: #ffffff;
+      text-align: left;
       letter-spacing: 0.02em;
-      text-transform: uppercase;
-      font-size: 0.9em;
+      margin: -10px 0 0 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
     
     .search-box {
-      margin: 16px 24px;
+      margin: 16px 20px 20px 20px;
       position: relative;
+      border-top: 1px solid #2d3748;
+      padding-top: 16px;
+      background: #0a0a0a;
+      flex-shrink: 0;
     }
     
     .search-box input {
@@ -228,14 +248,16 @@
       padding: 12px 16px;
       background: #1a202c;
       border: 1px solid #2d3748;
+      border-radius: 8px;
       color: #f8f9fa;
       font-size: 0.9em;
-      transition: border-color 0.2s ease;
+      transition: all 0.3s ease;
     }
     
     .search-box input:focus {
       outline: none;
       border-color: #ffffff;
+      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
     }
     
     .search-box input::placeholder {
@@ -244,15 +266,17 @@
     
     .search-results {
       position: absolute;
-      top: 100%;
+      bottom: 100%;
       left: 0;
       right: 0;
       background: #1a202c;
       border: 1px solid #2d3748;
+      border-radius: 8px;
       max-height: 200px;
       overflow-y: auto;
       z-index: 1002;
       display: none;
+      box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.3);
     }
     
     .search-result-item {
@@ -271,8 +295,10 @@
     }
     
     .sidebar-content { 
-      padding: 20px 0 32px 0; 
+      padding: 12px 0 16px 0; 
       margin: 0;
+      flex: 1;
+      overflow-y: auto;
     }
     
     .sidebar-folder { 
@@ -293,10 +319,12 @@
       letter-spacing: 0.01em;
       position: relative;
       margin: 0;
+      border-radius: 0 8px 8px 0;
+      margin-right: 8px;
     }
     
     .sidebar-folder > span:hover { 
-      background: #2d3748; 
+      background: linear-gradient(90deg, transparent 0%, #2d3748 100%); 
       color: #e2e8f0;
     }
     
@@ -359,6 +387,8 @@
       font-size: 0.9em;
       position: relative;
       overflow: hidden;
+      border-radius: 0 8px 8px 0;
+      margin-right: 8px;
     }
     
     .sidebar-file a:hover { 
@@ -455,9 +485,9 @@
     .main-content { 
       flex: 1; 
       margin-left: 320px; 
-      margin-right: 420px;
-      padding: 40px 60px 60px 60px; 
-      max-width: calc(100vw - 740px);
+      margin-right: 320px;
+      padding: 10px 60px 60px 60px; 
+      max-width: calc(100vw - 640px);
       transition: margin-left 0.3s ease, margin-right 0.3s ease;
     }
 
@@ -497,7 +527,7 @@
       text-align: center; 
       max-width: 600px;
       margin: 0 auto; 
-      padding: 60px 0;
+      padding: 10px 0;
     }
     
     .welcome h1 { 
@@ -520,7 +550,7 @@
       max-width: 800px;
       margin: 0 auto; 
       background: #0a0a0a;
-      padding: 40px;
+      padding: 10px;
       animation: fadeIn 0.5s ease-in-out;
     }
     
@@ -626,120 +656,123 @@
     }
     
     .status-indicator {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      padding: 8px 16px;
-      background: #1a202c;
-      border: 1px solid #2d3748; 
-      font-size: 0.8em;
-      color: #adb5bd;
-      z-index: 1003;
-      transition: all 0.3s ease;
+      display: none !important;
     }
     
-    .status-indicator.online {
-      background: #0f5132;
-      border-color: #198754;
-      color: #d1e7dd;
-    }
-    
-    .status-indicator.updating {
-      background: #664d03;
-      border-color: #ffc107;
-      color: #fff3cd;
-    }
-    
-    /* 모바일 반응형 개선 */
-    @media (max-width: 768px) {
+    /* 모바일 반응형 개선 - 강제 적용 */
+    @media screen and (max-width: 768px) {
+      /* 데스크탑 스타일 완전히 오버라이드 */
+      .main-content {
+        flex: none !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding: 5px 15px 25px 15px !important;
+        max-width: 100% !important;
+        margin-top: 75px !important;
+        width: 100% !important;
+      }
+      
       .header {
-        padding: 0 20px;
+        padding: 0 15px;
         height: 70px;
+        justify-content: center;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        z-index: 9999;
+        overflow: hidden;
       }
       
       .logo {
         font-size: 1.8em;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
       }
       
       .hamburger {
-        display: flex;
+        display: flex !important;
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
       }
       
-      /* 그래프 토글 버튼 추가 */
-      .graph-toggle {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        width: 56px;
-        height: 56px;
-      background: #1a202c; 
-        border: 2px solid #2d3748;
-      color: #ffffff; 
-        font-size: 1.2em;
-        z-index: 1004;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-    
-      .graph-toggle:hover {
-      background: #2d3748;
-        border-color: #4a5568;
-      }
-      
-      .graph-toggle:active {
-        transform: scale(0.95);
-      }
-      
+      /* 사이드바 모바일 최적화 */
       .sidebar {
-        transform: translateX(-100%);
-        width: 300px;
-        height: 100vh;
-        top: 0;
-        z-index: 1005;
-        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.5);
+        transform: translateX(-100%) !important;
+        width: 280px !important;
+        max-width: 80vw !important;
+        height: 100vh !important;
+        top: 0 !important;
+        z-index: 10000 !important;
+        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.5) !important;
+        transition: transform 0.3s ease !important;
+        position: fixed !important;
+        left: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        overflow: hidden !important;
       }
       
       .sidebar.open {
-        transform: translateX(0);
+        transform: translateX(0) !important;
       }
       
+      .sidebar-header {
+        padding: 30px 20px 16px 20px !important;
+        border-bottom: 1px solid #2d3748 !important;
+        background: none !important;
+        margin: 0 !important;
+        height: auto !important;
+        overflow: visible !important;
+      }
+      
+      .sidebar-title {
+        font-size: 1.2em !important;
+        font-weight: 600 !important;
+        color: #ffffff !important;
+        text-align: left !important;
+        letter-spacing: 0.02em !important;
+        margin: -10px 0 0 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+      }
+      
+      .sidebar-content {
+        padding: 12px 0 16px 0 !important;
+        margin: 0 !important;
+        flex: 1 !important;
+        overflow-y: auto !important;
+      }
+      
+      .sidebar-resize-handle {
+        display: none !important;
+      }
+      
+      /* 그래프 사이드바 모바일에서 완전히 숨김 */
       .graph-sidebar {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background: #0a0a0a;
-        z-index: 1006;
-        transform: translateY(100%);
-        transition: transform 0.3s ease;
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        width: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
       }
       
-      .graph-sidebar.open {
-        display: block;
-        transform: translateY(0);
-      }
-      
-      .graph-container {
-        height: 100vh;
-        padding-top: 60px;
-      }
-      
-      .main-content {
-        margin-left: 0;
-        margin-right: 0;
-        padding: 25px 20px;
-        max-width: 100%;
-        margin-top: 70px;
-        padding-bottom: 80px; /* 그래프 토글 버튼 공간 확보 */
-      }
+      /* 메인 콘텐츠 모바일 최적화 - 이미 위에서 설정됨 */
       
       .blog-post {
-        padding: 25px 20px;
+        padding: 10px 15px 25px 15px !important;
+        margin: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        background: #0a0a0a !important;
       }
       
       .blog-post h1 {
@@ -774,6 +807,9 @@
         min-height: 44px;
         display: flex;
         align-items: center;
+        word-wrap: break-word;
+        word-break: break-word;
+        white-space: normal;
       }
       
       .sidebar-folder > span {
@@ -782,16 +818,24 @@
         min-height: 44px;
         display: flex;
         align-items: center;
+        word-wrap: break-word;
+        word-break: break-word;
+        white-space: normal;
       }
       
       .search-box {
-        margin: 20px;
+        margin: 16px 20px 20px 20px !important;
+        border-top: 1px solid #2d3748 !important;
+        padding-top: 16px !important;
+        background: #0a0a0a !important;
+        flex-shrink: 0 !important;
       }
       
       .search-box input {
-        padding: 12px 16px;
-        font-size: 1em;
-        min-height: 44px;
+        padding: 12px 16px !important;
+        font-size: 1em !important;
+        min-height: 44px !important;
+        border-radius: 8px !important;
       }
       
       .search-result-item {
@@ -801,24 +845,30 @@
       }
       
       .status-indicator {
-        top: 85px;
-        right: 15px;
-        font-size: 0.8em;
-        padding: 8px 12px;
+        display: none !important;
       }
       
       .content-wrapper {
-        margin-top: 70px;
+        margin-top: 75px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+      
+      .welcome {
+        padding: 10px 20px 40px 20px !important;
+        margin: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
       }
       
       .welcome h1 {
-        font-size: 2.4em;
-        margin-bottom: 25px;
+        font-size: 2.4em !important;
+        margin-bottom: 25px !important;
       }
       
       .welcome p {
-        font-size: 1.1em;
-        line-height: 1.6;
+        font-size: 1.1em !important;
+        line-height: 1.6 !important;
       }
       
       /* 옵시디언 링크 터치 개선 */
@@ -829,18 +879,13 @@
         line-height: 1.4;
       }
       
-      /* 모바일에서 닫기 버튼 표시 */
+      /* 모바일에서 닫기 버튼 숨김 */
       .close-btn {
-        display: flex;
+        display: none !important;
       }
       
       /* 터치 스크롤 최적화 */
       .sidebar {
-        -webkit-overflow-scrolling: touch;
-        overflow-y: auto;
-      }
-      
-      .graph-sidebar {
         -webkit-overflow-scrolling: touch;
         overflow-y: auto;
       }
@@ -853,20 +898,53 @@
       * {
         -webkit-tap-highlight-color: transparent;
       }
+      
+      /* 모바일에서 컨테이너 완전히 초기화 */
+      .container {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100vw !important;
+        position: relative !important;
+        overflow-x: hidden !important;
+      }
+      
+      /* 모바일에서 content div 완전히 초기화 */
+      #content {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
     }
     
-    @media (max-width: 480px) {
+    @media screen and (max-width: 480px) {
       .header {
-        padding: 0 15px;
+        padding: 0 10px;
         height: 65px;
+        justify-content: center;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        z-index: 9999;
+        overflow: hidden;
       }
       
       .logo {
         font-size: 1.5em;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
       }
       
       .hamburger {
         padding: 8px;
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
       }
       
       .hamburger span {
@@ -875,22 +953,13 @@
         margin: 3px 0;
       }
       
-      .graph-toggle {
-        bottom: 15px;
-        right: 15px;
-        width: 52px;
-        height: 52px;
-        font-size: 1.1em;
-      }
-      
       .main-content {
-        padding: 20px 15px;
-        margin-top: 65px;
-        padding-bottom: 75px;
+        padding: 0px 10px 20px 10px !important;
+        margin-top: 5px !important;
       }
       
       .blog-post {
-        padding: 20px 15px;
+        padding: 0px 10px 20px 10px;
       }
       
       .blog-post h1 {
@@ -922,23 +991,26 @@
         padding: 14px 18px;
         font-size: 0.95em;
         min-height: 48px;
+        word-wrap: break-word;
+        word-break: break-word;
+        white-space: normal;
       }
       
       .sidebar-folder > span {
         padding: 16px 18px;
         font-size: 1em;
         min-height: 48px;
+        word-wrap: break-word;
+        word-break: break-word;
+        white-space: normal;
       }
       
       .status-indicator {
-        top: 75px;
-        right: 10px;
-        font-size: 0.75em;
-        padding: 6px 10px;
+        display: none !important;
       }
       
       .content-wrapper {
-        margin-top: 65px;
+        margin-top: 70px;
       }
       
       .welcome h1 {
@@ -946,14 +1018,19 @@
         margin-bottom: 20px;
       }
       
+      .welcome {
+        padding: 0px 5px 30px 5px !important;
+      }
+      
       .welcome p {
         font-size: 1em;
         line-height: 1.5;
-        padding: 0 10px;
+        padding: 0 5px;
       }
       
       .sidebar { 
-        width: 280px; 
+        width: 250px !important;
+        max-width: 75vw !important;
       }
       
       .search-box {
@@ -979,9 +1056,9 @@
         min-height: 30px;
       }
       
-      /* 모바일에서 닫기 버튼 표시 */
+      /* 모바일에서 닫기 버튼 숨김 */
       .close-btn {
-        display: flex;
+        display: none !important;
       }
     }
     
@@ -1021,12 +1098,120 @@
       color: #c82333;
     }
 
+    /* 햄버거 메뉴 스타일 */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 44px;
+      height: 44px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 10px;
+      z-index: 1003;
+      transition: all 0.3s ease;
+      border-radius: 8px;
+    }
+    
+    .hamburger span {
+      display: block;
+      width: 28px;
+      height: 3px;
+      background: #ffffff;
+      border-radius: 1px;
+      margin: 3px 0;
+      transition: all 0.3s ease;
+      transform-origin: center;
+    }
+    
+    /* 모바일에서만 햄버거 버튼 X 변환 적용 */
+    @media screen and (max-width: 768px) {
+      .hamburger.active span:nth-child(1) {
+        transform: rotate(45deg) translate(7px, 7px);
+      }
+      
+      .hamburger.active span:nth-child(2) {
+        opacity: 0;
+        transform: scale(0);
+      }
+      
+      .hamburger.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(7px, -7px);
+      }
+    }
+    
+    .hamburger:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+    }
+    
+    /* 닫기 버튼 스타일 - 깔끔한 X만 */
+    .close-btn {
+      display: none;
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      width: 36px;
+      height: 36px;
+      background: none;
+      border: none;
+      color: #ffffff;
+      font-size: 1.8em;
+      line-height: 1;
+      cursor: pointer;
+      z-index: 10001;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 300;
+      opacity: 0.7;
+    }
+    
+    .close-btn:hover {
+      opacity: 1;
+      transform: scale(1.1);
+      color: #ff6b6b;
+    }
+    
+    .close-btn:active {
+      transform: scale(0.9);
+    }
+    
+    /* 사이드바 오버레이 */
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 9999;
+      backdrop-filter: blur(4px);
+      transition: opacity 0.3s ease;
+      opacity: 0;
+    }
+    
+    .sidebar-overlay.active {
+      display: block !important;
+      opacity: 1 !important;
+    }
+    
+
+
     /* 데스크탑에서 모바일 전용 요소 숨기기 */
     .graph-toggle {
       display: none;
     }
     
     .close-btn {
+      display: none;
+    }
+    
+    .sidebar-overlay {
       display: none;
     }
   </style>
@@ -1044,26 +1229,26 @@
       </button>
     </header>
     
-    <div class="status-indicator" id="status-indicator">
-      연결 확인 중...
-    </div>
+    <!-- 상태 표시기 제거됨 -->
     
     <div class="content-wrapper">
       <aside class="sidebar" id="sidebar">
         <div class="sidebar-resize-handle" id="sidebar-resize-handle"></div>
         <button class="close-btn" id="sidebar-close-btn">×</button>
-        <div class="sidebar-header">
-        </div>
         
-        <div class="search-box">
-          <input type="text" id="search-input" placeholder="검색...">
-          <div class="search-results" id="search-results"></div>
+        <div class="sidebar-header">
+          <h2 class="sidebar-title">📚 블로그 목록</h2>
         </div>
         
         <div class="sidebar-content">
           <ul id="sidebar-blog-list">
             <!-- 🚀 완전 동적 로딩 전용 - 하드코딩 금지! -->
           </ul>
+        </div>
+        
+        <div class="search-box">
+          <input type="text" id="search-input" placeholder="🔍 검색...">
+          <div class="search-results" id="search-results"></div>
         </div>
       </aside>
       
@@ -1086,8 +1271,8 @@
       </aside>
     </div>
     
-    <!-- 모바일 그래프 토글 버튼 -->
-    <button class="graph-toggle" id="graph-toggle">🕸️</button>
+    <!-- 모바일 사이드바 오버레이 -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
   </div>
 
 <script>
@@ -1132,16 +1317,15 @@
     const sidebarList = document.getElementById('sidebar-blog-list');
     const searchInput = document.getElementById('search-input');
     const searchResults = document.getElementById('search-results');
-    const statusIndicator = document.getElementById('status-indicator');
+    // 상태 표시기 제거됨
     const hamburger = document.getElementById('hamburger');
     const sidebar = document.getElementById('sidebar');
     const graphSidebar = document.getElementById('graph-sidebar');
     const graphContainer = document.getElementById('graph-container');
 
-    // 상태 표시기 업데이트
+    // 상태 표시기 업데이트 - 제거됨
     function updateStatusIndicator(status, message) {
-      statusIndicator.textContent = message;
-      statusIndicator.className = 'status-indicator ' + status;
+      // 상태 표시기 제거됨
     }
     
     // 로딩 상태 표시
@@ -1177,7 +1361,6 @@
           
         if (article && title) {
             contentDiv.innerHTML = `<div class="blog-post"><h1>${title.textContent}</h1>${article.innerHTML}</div>`;
-            updateStatusIndicator('online', '온라인');
             isOnline = true;
             
             // 옵시디언 스타일 링크 변환
@@ -1194,7 +1377,6 @@
         .catch(error => {
           console.error('포스트 로드 실패:', error);
           showError(`포스트를 불러올 수 없습니다: ${error.message}`);
-          updateStatusIndicator('offline', '오프라인');
           isOnline = false;
         });
     }
@@ -1207,7 +1389,7 @@
         return;
       }
 
-      updateStatusIndicator('updating', '업데이트 중...');
+      // 상태 표시기 업데이트 제거됨
       
       // 모바일 최적화: 절대 경로와 캐시 방지
       const url = `${window.location.origin}/blog-list.json?t=${Date.now()}`;
@@ -1225,7 +1407,6 @@
           
           if (lastUpdateHash === currentHash) {
             console.log('📋 변경사항 없음 - DOM 업데이트 건너뛰기');
-            updateStatusIndicator('online', '최신 상태');
             return;
           }
           
@@ -1256,14 +1437,12 @@
               }, 100);
             }
             
-            updateStatusIndicator('online', '최신 상태');
             isOnline = true;
             console.log('✅ 사이드바 업데이트 완료:', data.totalPosts + '개 포스트');
           }
         })
         .catch(error => {
           console.error('사이드바 업데이트 실패:', error);
-          updateStatusIndicator('offline', '오프라인');
           isOnline = false;
       });
   }
@@ -2193,6 +2372,89 @@
         });
       });
     }
+
+    // 🎯 간단한 모바일 햄버거 메뉴
+    function initializeMobileMenu() {
+      const hamburger = document.getElementById('hamburger');
+      const sidebar = document.getElementById('sidebar');
+      const sidebarOverlay = document.getElementById('sidebar-overlay');
+      const sidebarCloseBtn = document.getElementById('sidebar-close-btn');
+      
+      // 모바일에서만 햄버거 메뉴 클릭 이벤트
+      hamburger.addEventListener('click', function(e) {
+        // 모바일에서만 동작하도록 체크
+        if (window.innerWidth <= 768) {
+          e.preventDefault();
+          e.stopPropagation();
+          toggleSidebar();
+        }
+      });
+      
+      // 사이드바 오버레이 클릭 시 닫기 (모바일에서만)
+      sidebarOverlay.addEventListener('click', function(e) {
+        if (window.innerWidth <= 768) {
+          e.preventDefault();
+          closeSidebar();
+        }
+      });
+      
+      // 사이드바 닫기 버튼 (모바일에서만)
+      sidebarCloseBtn.addEventListener('click', function(e) {
+        if (window.innerWidth <= 768) {
+          e.preventDefault();
+          closeSidebar();
+        }
+      });
+      
+      function toggleSidebar() {
+        // 사이드바가 실제로 열려있는지 확인
+        const isOpen = sidebar.classList.contains('open');
+        if (isOpen) {
+          closeSidebar();
+        } else {
+          openSidebar();
+        }
+      }
+      
+      function openSidebar() {
+        // 사이드바가 실제로 열렸을 때만 active 클래스 추가
+        sidebar.classList.add('open');
+        sidebarOverlay.classList.add('active');
+        hamburger.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        document.documentElement.style.overflow = 'hidden';
+        // 모바일에서 사이드바가 최상단에 오도록 함
+        document.querySelector('.main-content').style.zIndex = '1';
+      }
+      
+      function closeSidebar() {
+        // 사이드바가 실제로 닫혔을 때만 active 클래스 제거
+        sidebar.classList.remove('open');
+        sidebarOverlay.classList.remove('active');
+        hamburger.classList.remove('active');
+        document.body.style.overflow = '';
+        document.documentElement.style.overflow = '';
+        // z-index 원래대로 되돌리기
+        document.querySelector('.main-content').style.zIndex = '';
+      }
+      
+      // 화면 크기 변경 시 사이드바 닫기
+      window.addEventListener('resize', function() {
+        if (window.innerWidth > 768) {
+          closeSidebar();
+        }
+      });
+      
+      // ESC 키로 사이드바 닫기 (모바일에서만)
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && window.innerWidth <= 768) {
+          closeSidebar();
+        }
+      });
+    }
+
+    // 모바일 메뉴 초기화
+    initializeMobileMenu();
   </script>
 </body>
 </html>

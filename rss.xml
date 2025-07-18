@@ -6,7 +6,7 @@
     <link>https://baburger.xyz</link>
     <atom:link href="https://baburger.xyz/rss.xml" rel="self" type="application/rss+xml"/>
     <language>ko</language>
-    <lastBuildDate>Fri, 18 Jul 2025 14:08:45 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 18 Jul 2025 16:17:13 GMT</lastBuildDate>
     <generator>Obsidian Blog Generator</generator>
     <item>
       <title>제대로 글 써보기</title>
@@ -28,8 +28,8 @@
       <description>데미안은 즐겁나?
 나는 즐겁나?
 안녕하세요.</description>
-      <link>https://baburger.xyz/blog/개발공부/0718-데미안-때리는-날.html</link>
-      <guid isPermaLink="true">https://baburger.xyz/blog/개발공부/0718-데미안-때리는-날.html</guid>
+      <link>https://baburger.xyz/blog/생각정리/0718-데미안-때리는-날.html</link>
+      <guid isPermaLink="true">https://baburger.xyz/blog/생각정리/0718-데미안-때리는-날.html</guid>
       <pubDate>Fri, 18 Jul 2025 12:29:58 GMT</pubDate>
     </item>
     <item>
@@ -41,23 +41,9 @@ TEST!
 ㅋㅋㅋ
 신기하다...
 ㅇㅇㅇ</description>
-      <link>https://baburger.xyz/blog/개발공부/안녕하세요.html</link>
-      <guid isPermaLink="true">https://baburger.xyz/blog/개발공부/안녕하세요.html</guid>
+      <link>https://baburger.xyz/blog/생각정리/안녕하세요.html</link>
+      <guid isPermaLink="true">https://baburger.xyz/blog/생각정리/안녕하세요.html</guid>
       <pubDate>Fri, 18 Jul 2025 12:25:45 GMT</pubDate>
-    </item>
-    <item>
-      <title>서버-독립-테스트-212506</title>
-      <description>서버 자동 감지 테스트 Fri Jul 18 21:25:06 KST 2025</description>
-      <link>https://baburger.xyz/blog/개발공부/서버-독립-테스트-212506.html</link>
-      <guid isPermaLink="true">https://baburger.xyz/blog/개발공부/서버-독립-테스트-212506.html</guid>
-      <pubDate>Fri, 18 Jul 2025 12:25:07 GMT</pubDate>
-    </item>
-    <item>
-      <title>실시간-업데이트-테스트</title>
-      <description></description>
-      <link>https://baburger.xyz/blog/go/실시간-업데이트-테스트.html</link>
-      <guid isPermaLink="true">https://baburger.xyz/blog/go/실시간-업데이트-테스트.html</guid>
-      <pubDate>Fri, 18 Jul 2025 12:21:03 GMT</pubDate>
     </item>
     <item>
       <title>1시 40분</title>
@@ -89,11 +75,11 @@ TEST!
       <pubDate>Thu, 17 Jul 2025 15:37:02 GMT</pubDate>
     </item>
     <item>
-      <title>250717 - 옵셔널</title>
+      <title>0717 옵셔널</title>
       <description>👀GO:  
 옵셔널, 래핑, 언래핑, if let (현업에서 쓰는 형태) guard let 자세히 설명해줘</description>
-      <link>https://baburger.xyz/blog/개발공부/250717-옵셔널.html</link>
-      <guid isPermaLink="true">https://baburger.xyz/blog/개발공부/250717-옵셔널.html</guid>
+      <link>https://baburger.xyz/blog/개발공부/0717-옵셔널.html</link>
+      <guid isPermaLink="true">https://baburger.xyz/blog/개발공부/0717-옵셔널.html</guid>
       <pubDate>Thu, 17 Jul 2025 13:38:29 GMT</pubDate>
     </item>
   </channel>
