@@ -1542,6 +1542,37 @@
       });
     }
     
+    // 글 클릭 시 해당 폴더 자동 열기 (중첩 폴더 지원)
+    function openParentFolder(slug) {
+      // slug에서 모든 폴더명 추출 (예: '생각정리/7월/브랜뉴' -> ['생각정리', '7월'])
+      const folderNames = slug.split('/').slice(0, -1); // 마지막은 파일명이므로 제외
+      
+      console.log('🔍 폴더 열기 시도:', slug, '-> 폴더들:', folderNames);
+      
+      // 각 폴더를 순서대로 열기
+      folderNames.forEach(folderName => {
+        // 해당 폴더 찾기 (모든 레벨에서 검색)
+        const folderSpans = document.querySelectorAll('.sidebar-folder > span');
+        let found = false;
+        
+        folderSpans.forEach(folderSpan => {
+          const currentFolderName = folderSpan.textContent.trim();
+          if (currentFolderName === folderName && !found) {
+            // 폴더가 닫혀있으면 열기
+            if (folderSpan.parentElement.classList.contains('collapsed')) {
+              folderSpan.parentElement.classList.remove('collapsed');
+              console.log('📁 폴더 자동 열기:', folderName);
+            }
+            found = true; // 중복 방지
+          }
+        });
+        
+        if (!found) {
+          console.log('⚠️ 폴더를 찾을 수 없음:', folderName);
+        }
+      });
+    }
+    
     // 이벤트 리스너 등록
     function registerEventListeners() {
       // 폴더 접기/펼치기
@@ -1565,6 +1596,9 @@
             
             // currentSlug 업데이트
             currentSlug = slug;
+            
+            // 해당 폴더 자동 열기
+            openParentFolder(slug);
             
             // 즉시 그래프 하이라이트 업데이트
             highlightCurrentPost();
@@ -1594,6 +1628,9 @@
             
             // currentSlug 업데이트
             currentSlug = slug;
+            
+            // 해당 폴더 자동 열기
+            openParentFolder(slug);
             
             // 즉시 그래프 하이라이트 업데이트
             highlightCurrentPost();
@@ -1626,6 +1663,9 @@
             
             // currentSlug 업데이트
             currentSlug = slug;
+            
+            // 해당 폴더 자동 열기
+            openParentFolder(slug);
             
             // 즉시 그래프 하이라이트 업데이트
             highlightCurrentPost();
@@ -1780,6 +1820,9 @@
             
             // currentSlug 업데이트
             currentSlug = nodeId;
+            
+            // 해당 폴더 자동 열기
+            openParentFolder(nodeId);
             
             // 즉시 그래프 하이라이트 업데이트
             highlightCurrentPost();
@@ -2153,6 +2196,9 @@
             highlightCurrentPost();
           }, 1000);
         }
+      } else {
+        // 해시가 없으면 기본 글 로드
+        loadDefaultPost();
       }
     
     // 실시간 업데이트 시작
@@ -2448,6 +2494,35 @@
           closeSidebar();
         }
       });
+    }
+
+    // 기본 글 로드 함수
+    async function loadDefaultPost() {
+      try {
+        // config.js에서 기본 글 설정 가져오기
+        const configResponse = await fetch('/config.js');
+        const configText = await configResponse.text();
+        
+        // config.js에서 defaultPost.slug 추출
+        const slugMatch = configText.match(/slug:\s*['"`]([^'"`]+)['"`]/);
+        const defaultSlug = slugMatch ? slugMatch[1] : '';
+        
+        if (defaultSlug && defaultSlug.trim() !== '') {
+          console.log('📖 기본 글 로드:', defaultSlug);
+          currentSlug = defaultSlug;
+          loadBlogPost(defaultSlug);
+          window.location.hash = '#' + defaultSlug;
+          
+          // 그래프 하이라이트 (약간의 지연 후)
+          setTimeout(() => {
+            highlightCurrentPost();
+          }, 1000);
+        } else {
+          console.log('🏠 기본 글 없음 - welcome 메시지 표시');
+        }
+      } catch (error) {
+        console.log('🏠 기본 글 로드 실패 - welcome 메시지 표시:', error.message);
+      }
     }
 
     // 모바일 메뉴 초기화

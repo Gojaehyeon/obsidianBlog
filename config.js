@@ -12,6 +12,15 @@ export default {
     favicon: '/assets/logo/logo.png'
   },
 
+  // 기본 글 설정
+  defaultPost: {
+    // 홈페이지에서 기본으로 표시할 글의 slug
+    // 빈 문자열이면 welcome 메시지 표시
+    slug: 'GO/옵시디언으로-블로그-만들기',
+    // 또는 파일명으로 설정 (확장자 제외)
+    // filename: '250717-옵셔널'
+  },
+
   // 기본 경로 설정
   paths: {
     markdown: 'go',

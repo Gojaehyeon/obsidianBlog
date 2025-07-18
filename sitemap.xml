@@ -7,6 +7,12 @@
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>https://baburger.xyz/blog/GO/옵시디언으로-블로그-만들기.html</loc>
+    <lastmod>2025-07-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://baburger.xyz/blog/개발공부/0717-옵셔널.html</loc>
     <lastmod>2025-07-17</lastmod>
     <changefreq>weekly</changefreq>

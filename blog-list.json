@@ -1,8 +1,17 @@
 {
-  "blogList": "<li class=\"sidebar-folder\"><span>개발공부</span><ul>\n  <li class=\"sidebar-file\"><a href=\"#\" class=\"blog-link\" data-slug=\"개발공부/0717-옵셔널\">0717 옵셔널</a></li>\n  <li class=\"sidebar-file\"><a href=\"#\" class=\"blog-link\" data-slug=\"개발공부/제대로-글-써보기\">제대로 글 써보기</a></li>\n</ul></li>\n<li class=\"sidebar-folder\"><span>생각정리</span><ul>\n  <li class=\"sidebar-folder\"><span>6월</span><ul>\n    <li class=\"sidebar-file\"><a href=\"#\" class=\"blog-link\" data-slug=\"생각정리/6월/헬로우\">헬로우</a></li>\n  </ul></li>\n  <li class=\"sidebar-folder\"><span>7월</span><ul>\n    <li class=\"sidebar-file\"><a href=\"#\" class=\"blog-link\" data-slug=\"생각정리/7월/0718-데미안-때리는-날\">0718 - 데미안 때리는 날</a></li>\n    <li class=\"sidebar-file\"><a href=\"#\" class=\"blog-link\" data-slug=\"생각정리/7월/1시-40분\">1시 40분</a></li>\n    <li class=\"sidebar-file\"><a href=\"#\" class=\"blog-link\" data-slug=\"생각정리/7월/브랜뉴\">브랜뉴!</a></li>\n    <li class=\"sidebar-file\"><a href=\"#\" class=\"blog-link\" data-slug=\"생각정리/7월/안녕하세요\">안녕하세요!</a></li>\n    <li class=\"sidebar-file\"><a href=\"#\" class=\"blog-link\" data-slug=\"생각정리/7월/테스트\">테스트</a></li>\n  </ul></li>\n</ul></li>\n",
-  "lastUpdated": "2025-07-18T16:55:47.619Z",
-  "totalPosts": 8,
+  "blogList": "<li class=\"sidebar-folder\"><span>개발공부</span><ul>\n  <li class=\"sidebar-file\"><a href=\"#\" class=\"blog-link\" data-slug=\"개발공부/0717-옵셔널\">0717 옵셔널</a></li>\n  <li class=\"sidebar-file\"><a href=\"#\" class=\"blog-link\" data-slug=\"개발공부/제대로-글-써보기\">제대로 글 써보기</a></li>\n</ul></li>\n<li class=\"sidebar-folder\"><span>생각정리</span><ul>\n  <li class=\"sidebar-folder\"><span>6월</span><ul>\n    <li class=\"sidebar-file\"><a href=\"#\" class=\"blog-link\" data-slug=\"생각정리/6월/헬로우\">헬로우</a></li>\n  </ul></li>\n  <li class=\"sidebar-folder\"><span>7월</span><ul>\n    <li class=\"sidebar-file\"><a href=\"#\" class=\"blog-link\" data-slug=\"생각정리/7월/0718-데미안-때리는-날\">0718 - 데미안 때리는 날</a></li>\n    <li class=\"sidebar-file\"><a href=\"#\" class=\"blog-link\" data-slug=\"생각정리/7월/1시-40분\">1시 40분</a></li>\n    <li class=\"sidebar-file\"><a href=\"#\" class=\"blog-link\" data-slug=\"생각정리/7월/브랜뉴\">브랜뉴!</a></li>\n    <li class=\"sidebar-file\"><a href=\"#\" class=\"blog-link\" data-slug=\"생각정리/7월/안녕하세요\">안녕하세요!</a></li>\n    <li class=\"sidebar-file\"><a href=\"#\" class=\"blog-link\" data-slug=\"생각정리/7월/테스트\">테스트</a></li>\n  </ul></li>\n</ul></li>\n<li class=\"sidebar-folder\"><span>GO</span><ul>\n  <li class=\"sidebar-file\"><a href=\"#\" class=\"blog-link\" data-slug=\"GO/옵시디언으로-블로그-만들기\">옵시디언으로 블로그 만들기</a></li>\n</ul></li>\n",
+  "lastUpdated": "2025-07-18T16:59:53.870Z",
+  "totalPosts": 9,
   "posts": [
+    {
+      "title": "옵시디언으로 블로그 만들기",
+      "slug": "GO/옵시디언으로-블로그-만들기",
+      "path": "GO/옵시디언으로 블로그 만들기.md",
+      "description": "",
+      "lastModified": "2025-07-18T16:59:28.000Z",
+      "created": "2025-07-18T16:59:28.914Z",
+      "url": "https://baburger.xyz/blog/GO/옵시디언으로-블로그-만들기.html"
+    },
     {
       "title": "0717 옵셔널",
       "slug": "개발공부/0717-옵셔널",
@@ -26,7 +35,7 @@
       "slug": "생각정리/6월/헬로우",
       "path": "생각정리/6월/헬로우.md",
       "description": "헬로월드\nㅋㅋ",
-      "lastModified": "2025-07-18T13:10:45.000Z",
+      "lastModified": "2025-07-18T16:58:27.494Z",
       "created": "2025-07-17T15:20:02.125Z",
       "url": "https://baburger.xyz/blog/생각정리/6월/헬로우.html"
     },
