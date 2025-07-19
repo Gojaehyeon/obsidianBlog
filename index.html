@@ -1396,8 +1396,9 @@
             // 옵시디언 스타일 링크 변환
             convertObsidianLinks(contentDiv);
             
-            // 댓글 영역 추가
-            addCommentsSection(slug);
+                  // 댓글 영역 추가 (글 제목과 함께)
+      const postTitle = title.textContent;
+      addCommentsSection(slug, postTitle);
             
             // 모바일에서 스크롤 최상단으로 이동
             if (window.innerWidth <= 768) {
@@ -2649,7 +2650,7 @@
     }
 
     // 댓글 영역 추가 함수
-    function addCommentsSection(slug) {
+    function addCommentsSection(slug, postTitle) {
       // 기존 댓글 영역 제거
       const existingComments = document.getElementById('comments-section');
       if (existingComments) {
@@ -2661,10 +2662,6 @@
       commentsSection.id = 'comments-section';
       commentsSection.className = 'comments-section';
       commentsSection.innerHTML = `
-        <div class="comments-header">
-          <h3>💬 댓글</h3>
-          <p>GitHub 계정으로 로그인하여 댓글을 남겨보세요!</p>
-        </div>
         <div id="utterances-container"></div>
       `;
       
@@ -2674,12 +2671,12 @@
         blogPost.appendChild(commentsSection);
       }
       
-      // Utterances 스크립트 로드
-      loadUtterances(slug);
+      // Utterances 스크립트 로드 (글 제목과 함께)
+      loadUtterances(slug, postTitle);
     }
     
     // Utterances 로드 함수
-    function loadUtterances(slug) {
+    function loadUtterances(slug, postTitle) {
       // 기존 Utterances 제거
       const existingScript = document.querySelector('script[src*="utteranc.es"]');
       if (existingScript) {
@@ -2690,7 +2687,8 @@
       const script = document.createElement('script');
       script.src = 'https://utteranc.es/client.js';
       script.setAttribute('repo', 'gojaehyeon/obsidian-blog-comments'); // 실제 GitHub 저장소명으로 변경
-      script.setAttribute('issue-term', 'pathname');
+      script.setAttribute('issue-term', 'title'); // title 사용
+      script.setAttribute('issue-number', ''); // 빈 값으로 설정하여 자동 생성
       script.setAttribute('theme', 'github-dark');
       script.setAttribute('crossorigin', 'anonymous');
       script.async = true;
@@ -2700,6 +2698,9 @@
       if (container) {
         container.appendChild(script);
       }
+      
+      // 페이지 제목을 동적으로 설정 (Utterances가 이 제목으로 Issue 생성)
+      document.title = postTitle + ' - GO의 디지털 가든';
     }
 
     // 기본 글 로드 함수
