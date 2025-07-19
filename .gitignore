@@ -1,4 +1,45 @@
+# 개인 데이터 폴더
 go/
 obsidianBlog/
-go/
-go/
+
+# 생성된 파일들 (사용자가 직접 생성)
+blog/
+blog-list.json
+rss.xml
+sitemap.xml
+
+# 로그 파일들
+*.log
+watcher.log
+blog-watcher.log
+
+# 시스템 파일들
+.DS_Store
+._.DS_Store
+._*
+.fuse_hidden*
+
+# Node.js
+node_modules/
+package-lock.json
+
+# 서버 설정 파일들 (개인 정보 포함)
+config-server.js
+deploy-server.sh
+deploy-with-password.sh
+auto-deploy.sh
+setup-ssh-key.sh
+install-server.sh
+start-server-manually.sh
+start-background-process.sh
+real-time-watch.sh
+
+# 서비스 파일 (시스템별 설정)
+obsidian-blog.service
+
+# 성능 최적화 파일 (임시)
+performance-optimizer.js
+
+# 임시 파일들
+*.tmp
+*.temp
