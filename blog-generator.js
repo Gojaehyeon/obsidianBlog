@@ -335,15 +335,15 @@ class BlogGenerator {
       }
     }
     
-    // 폴더 먼저 렌더링
-    folders.sort((a, b) => a.key.localeCompare(b.key)).forEach(({ key, item }) => {
+    // 폴더 먼저 렌더링 (영어가 한글보다 위로)
+    folders.sort((a, b) => a.key.localeCompare(b.key, 'ko', { numeric: true })).forEach(({ key, item }) => {
       html += `${indent}<li class="sidebar-folder"><span>${key}</span><ul>\n`;
       html += this.renderFolderStructure(item.folders, indent + '  ');
       html += `${indent}</ul></li>\n`;
     });
     
-    // 파일 렌더링
-    files.sort((a, b) => a.key.localeCompare(b.key)).forEach(({ key, item }) => {
+    // 파일 렌더링 (영어가 한글보다 위로)
+    files.sort((a, b) => a.key.localeCompare(b.key, 'ko', { numeric: true })).forEach(({ key, item }) => {
       item.files.forEach(file => {
         html += `${indent}<li class="sidebar-file"><a href="#" class="blog-link" data-slug="${file.slug}">${file.title}</a></li>\n`;
       });
@@ -456,6 +456,7 @@ ${sitemapItems}
           slug: post.slug,
           path: post.path,
           description: post.description,
+          content: post.content, // 그래프 연결을 위해 content 추가
           lastModified: post.lastModified,
           created: post.created,
           url: post.url
