@@ -997,8 +997,57 @@
         min-height: 48px;
         word-wrap: break-word;
         word-break: break-word;
-        white-space: normal;
       }
+    }
+    
+    /* 댓글 영역 스타일 */
+    .comments-section {
+      margin-top: 60px;
+      padding-top: 40px;
+      border-top: 1px solid #333;
+    }
+    
+    .comments-header {
+      margin-bottom: 30px;
+      text-align: center;
+    }
+    
+    .comments-header h3 {
+      font-size: 1.8em;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 50%, #e9ecef 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .comments-header p {
+      color: #a0aec0;
+      font-size: 1em;
+      margin: 0;
+    }
+    
+    #utterances-container {
+      margin-top: 20px;
+    }
+    
+    /* 모바일 댓글 영역 */
+    @media screen and (max-width: 768px) {
+      .comments-section {
+        margin-top: 40px;
+        padding-top: 30px;
+      }
+      
+      .comments-header h3 {
+        font-size: 1.5em;
+      }
+      
+      .comments-header p {
+        font-size: 0.9em;
+      }
+    }
       
       .status-indicator {
         display: none !important;
@@ -1346,6 +1395,9 @@
             
             // 옵시디언 스타일 링크 변환
             convertObsidianLinks(contentDiv);
+            
+            // 댓글 영역 추가
+            addCommentsSection(slug);
             
             // 모바일에서 스크롤 최상단으로 이동
             if (window.innerWidth <= 768) {
@@ -2594,6 +2646,60 @@
           closeSidebar();
         }
       });
+    }
+
+    // 댓글 영역 추가 함수
+    function addCommentsSection(slug) {
+      // 기존 댓글 영역 제거
+      const existingComments = document.getElementById('comments-section');
+      if (existingComments) {
+        existingComments.remove();
+      }
+      
+      // 새로운 댓글 영역 생성
+      const commentsSection = document.createElement('div');
+      commentsSection.id = 'comments-section';
+      commentsSection.className = 'comments-section';
+      commentsSection.innerHTML = `
+        <div class="comments-header">
+          <h3>💬 댓글</h3>
+          <p>GitHub 계정으로 로그인하여 댓글을 남겨보세요!</p>
+        </div>
+        <div id="utterances-container"></div>
+      `;
+      
+      // 블로그 포스트 다음에 추가
+      const blogPost = contentDiv.querySelector('.blog-post');
+      if (blogPost) {
+        blogPost.appendChild(commentsSection);
+      }
+      
+      // Utterances 스크립트 로드
+      loadUtterances(slug);
+    }
+    
+    // Utterances 로드 함수
+    function loadUtterances(slug) {
+      // 기존 Utterances 제거
+      const existingScript = document.querySelector('script[src*="utteranc.es"]');
+      if (existingScript) {
+        existingScript.remove();
+      }
+      
+      // 새로운 Utterances 스크립트 생성
+      const script = document.createElement('script');
+      script.src = 'https://utteranc.es/client.js';
+      script.setAttribute('repo', 'gojaehyeon/obsidian-blog-comments'); // 실제 GitHub 저장소명으로 변경
+      script.setAttribute('issue-term', 'pathname');
+      script.setAttribute('theme', 'github-dark');
+      script.setAttribute('crossorigin', 'anonymous');
+      script.async = true;
+      
+      // 스크립트를 댓글 컨테이너에 추가
+      const container = document.getElementById('utterances-container');
+      if (container) {
+        container.appendChild(script);
+      }
     }
 
     // 기본 글 로드 함수
