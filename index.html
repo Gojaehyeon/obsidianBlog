@@ -1247,7 +1247,9 @@
 <body>
   <div class="container">
     <header class="header">
-      <a href="#" class="logo" id="logo-home-link">GO</a>
+      <a href="/index.html" class="logo" style="text-decoration: none;">
+        GO
+      </a>
       <button class="hamburger" id="hamburger">
         <span></span>
         <span></span>
@@ -1590,7 +1592,7 @@
     // 폴더 기본 상태 설정
     function setDefaultFolderStates() {
       // 기본적으로 열어둘 폴더들 (폴더명으로 설정)
-      const defaultOpenFolders = ['생각정리','7월']; // 원하는 폴더만 여기에 추가, 작은따옴표 안에 넣으면 된다!!! 중요!!
+      const defaultOpenFolders = ['개발공부', '흰둥맥-서버-일대기']; // 원하는 폴더만 여기에 추가, 작은따옴표 안에 넣으면 된다!!! 중요!!
       
       document.querySelectorAll('.sidebar-folder > span').forEach(folderSpan => {
         const folderName = folderSpan.textContent.trim();
@@ -2708,21 +2710,6 @@
 
     // 모바일 메뉴 초기화
     initializeMobileMenu();
-
-    // 로고 클릭 시 홈으로 이동
-    const logoHomeLink = document.getElementById('logo-home-link');
-    if (logoHomeLink) {
-      logoHomeLink.addEventListener('click', function(e) {
-        e.preventDefault();
-        // 해시 제거 및 메인 콘텐츠 초기화
-        window.location.hash = '';
-        loadDefaultPost();
-        // 사이드바 active 상태 모두 해제
-        document.querySelectorAll('.blog-link').forEach(l => l.classList.remove('active'));
-        // 그래프 하이라이트도 초기화
-        highlightCurrentPost();
-      });
-    }
   </script>
 </body>
 </html>
