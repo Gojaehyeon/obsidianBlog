@@ -1104,8 +1104,6 @@
       .close-btn {
         display: none !important;
       }
-    }
-    
     /* 태블릿 크기 */
     @media (min-width: 769px) and (max-width: 1200px) {
       .graph-sidebar {
@@ -1249,9 +1247,7 @@
 <body>
   <div class="container">
     <header class="header">
-      <div class="logo">
-        GO
-      </div>
+      <a href="#" class="logo" id="logo-home-link">GO</a>
       <button class="hamburger" id="hamburger">
         <span></span>
         <span></span>
@@ -1985,45 +1981,23 @@
         });
       });
 
-      // 실제 링크를 기반으로 엣지 생성 (옵시디언과 동일)
+      // 실제 링크를 기반으로 엣지 생성 (정확한 매칭만 허용)
       linkMap.forEach((links, sourceSlug) => {
         links.forEach(targetTitle => {
           const targetPost = allPosts.find(p => {
-            // 정확한 제목 매칭 (가장 정확)
-            if (p.title === targetTitle) {
-              console.log(`✅ 정확한 제목 매칭: "${targetTitle}" → "${p.title}"`);
+            // 1. 제목 정확히 일치 (대소문자 무시)
+            if (p.title.toLowerCase() === targetTitle.toLowerCase()) {
               return true;
             }
-            
-            // slug의 마지막 segment(파일명)로 비교 (두 번째로 정확)
+            // 2. slug 전체 정확히 일치 (대소문자 무시)
+            if (p.slug.toLowerCase() === targetTitle.toLowerCase()) {
+              return true;
+            }
+            // 3. slug의 마지막 segment(파일명) 정확히 일치 (대소문자 무시)
             const slugLast = p.slug.split('/').pop();
-            if (slugLast === targetTitle) {
-              console.log(`✅ slug 마지막 segment 매칭: "${targetTitle}" → "${slugLast}"`);
+            if (slugLast && slugLast.toLowerCase() === targetTitle.toLowerCase()) {
               return true;
             }
-            if (slugLast.replace(/[^\w-]/g, '') === targetTitle.replace(/[^\w-]/g, '')) {
-              console.log(`✅ slug 마지막 segment (특수문자 제거) 매칭: "${targetTitle}" → "${slugLast}"`);
-              return true;
-            }
-            
-            // 부분 제목 매칭 (세 번째로 정확)
-            if (p.title.includes(targetTitle) && targetTitle.length > 2) {
-              console.log(`✅ 부분 제목 매칭: "${targetTitle}" → "${p.title}"`);
-              return true;
-            }
-            if (targetTitle.includes(p.title) && p.title.length > 2) {
-              console.log(`✅ 부분 제목 매칭: "${targetTitle}" → "${p.title}"`);
-              return true;
-            }
-            
-            // slug 기반 매칭 (가장 광범위 - 마지막에 시도)
-            const targetSlug = targetTitle.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
-            const postSlug = p.slug.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
-            if (postSlug.includes(targetSlug) || targetSlug.includes(postSlug)) {
-              console.log(`✅ slug 기반 매칭: "${targetTitle}" → "${p.slug}"`);
-              return true;
-            }
-            
             return false;
           });
           if (targetPost && targetPost.slug !== sourceSlug) {
@@ -2734,6 +2708,21 @@
 
     // 모바일 메뉴 초기화
     initializeMobileMenu();
+
+    // 로고 클릭 시 홈으로 이동
+    const logoHomeLink = document.getElementById('logo-home-link');
+    if (logoHomeLink) {
+      logoHomeLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        // 해시 제거 및 메인 콘텐츠 초기화
+        window.location.hash = '';
+        loadDefaultPost();
+        // 사이드바 active 상태 모두 해제
+        document.querySelectorAll('.blog-link').forEach(l => l.classList.remove('active'));
+        // 그래프 하이라이트도 초기화
+        highlightCurrentPost();
+      });
+    }
   </script>
 </body>
 </html>

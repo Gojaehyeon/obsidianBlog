@@ -117,20 +117,18 @@ class BlogGenerator {
     const imageFiles = this.findFiles(this.mdDir, (name) => this.isImageFile(name));
     this.log(`이미지 파일 ${imageFiles.length}개 발견`);
 
+    // blog/images/ 폴더 생성
+    const imagesOutputDir = path.join(this.outDir, this.config.paths.images || 'images');
+    if (!fs.existsSync(imagesOutputDir)) {
+      fs.mkdirSync(imagesOutputDir, { recursive: true });
+    }
+
     for (const imageFile of imageFiles) {
       try {
-        const outputPath = path.join(this.outDir, imageFile.relativePath);
-        const outputDir = path.dirname(outputPath);
-        
-        if (!fs.existsSync(outputDir)) {
-          fs.mkdirSync(outputDir, { recursive: true });
-        }
-        
-        // 이미지 최적화 체크
-        const imageInfo = this.optimizer.optimizeImage(imageFile.fullPath);
-        
+        // 항상 blog/images/로 복사 (파일명만 사용)
+        const outputPath = path.join(imagesOutputDir, path.basename(imageFile.fullPath));
         fs.copyFileSync(imageFile.fullPath, outputPath);
-        this.log(`이미지 복사: ${imageFile.relativePath}`);
+        this.log(`이미지 복사: ${path.basename(imageFile.fullPath)} → ${outputPath}`);
       } catch (error) {
         this.log(`이미지 복사 실패: ${imageFile.relativePath} - ${error.message}`, 'warn');
       }
@@ -230,8 +228,16 @@ class BlogGenerator {
           continue;
         }
 
-        // 이미지 경로 처리
-        const processedContent = content.replace(
+        // 이미지 경로 처리 (Obsidian 이미지 임베드 지원, go/ 폴더에서 바로 서빙)
+        let processedContent = content.replace(
+          /!\[\[([^\]]+)\]\]/g,
+          (match, filename) => {
+            // go/ 폴더에서 바로 서빙 (하위폴더 포함)
+            return `<img src="/go/${filename.trim()}" alt="${filename.trim()}">`;
+          }
+        );
+        // 기존 마크다운 이미지 문법 처리
+        processedContent = processedContent.replace(
           /!\[([^\]]*)\]\(([^)]+)\)/g,
           (match, alt, src) => {
             if (src.startsWith('http') || src.startsWith('/')) {
